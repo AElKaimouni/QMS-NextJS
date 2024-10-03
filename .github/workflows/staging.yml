@@ -20,7 +20,7 @@ jobs:
       - name: Set up SSH
         run: |
           echo "$SSH_PRIVATE_KEY" > key.pem  # Retrieve the secret and save to a file
-          chmod 600 key.pem  # Set the correct permissions
+          chmod 400 key.pem  # Set the correct permissions
 
       - name: SSH to server and run commands
         run: |
