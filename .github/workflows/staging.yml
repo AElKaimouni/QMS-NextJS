@@ -24,5 +24,6 @@ jobs:
 
       - name: SSH to server and run commands
         run: |
+          cat key.pem
           ssh -i key.pem -o StrictHostKeyChecking=no $USERNAME@$REMOTE_IP "lsb_release -a"
         
