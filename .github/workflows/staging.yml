@@ -20,7 +20,6 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > key.pem  # Retrieve the secret and save to a file
           chmod 600 key.pem  # Set the correct permissions
-          ssh-keyscan -H $REMOTE_IP >> ~/.ssh/known_hosts  # Add the server to known hosts
 
       - name: SSH to server and run commands
         run: |
