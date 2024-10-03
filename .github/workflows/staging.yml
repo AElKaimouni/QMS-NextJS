@@ -25,4 +25,4 @@ jobs:
         script: |
           cd /home/github/QMS-NextJS
           git pull origin stage
-          docker compose up -d --build --force-recreate
+          echo ${{ secrets.PASSWORD }} | sudo -S docker compose up -d --build --force-recreate
