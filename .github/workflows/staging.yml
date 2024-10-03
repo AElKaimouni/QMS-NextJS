@@ -23,4 +23,6 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
-          lsb_release -a
+          cd /home/github/QMS-NextJS
+          git pull origin stage
+          docker compose up -d --build --force-recreate
