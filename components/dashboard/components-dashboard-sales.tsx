@@ -403,6 +403,7 @@ const ComponentsDashboardSales = () => {
     return (
         <>
             <div>
+                <h1>Hello kaimouni from github actions</h1>
                 <ul className="flex space-x-2 rtl:space-x-reverse">
                     <li>
                         <Link href="/" className="text-primary hover:underline">
