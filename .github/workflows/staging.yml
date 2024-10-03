@@ -1,0 +1,28 @@
+name: Deploy using SSH
+
+on:
+  push:
+    branches:
+      - stage  # Trigger the action on push to main branch
+
+env:
+  REMOTE_IP: ${{ secrets.REMOTE_IP }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        run: |
+          echo "$SSH_PRIVATE_KEY" > key.pem  # Retrieve the secret and save to a file
+          chmod 600 key.pem  # Set the correct permissions
+          ssh-keyscan -H $REMOTE_IP >> ~/.ssh/known_hosts  # Add the server to known hosts
+
+      - name: SSH to server and run commands
+        run: |
+          ssh -i key.pem -o StrictHostKeyChecking=no user@$REMOTE_IP "lsb_release -a"
+        
