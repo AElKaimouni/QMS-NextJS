@@ -20,6 +20,6 @@ export const api = createApi({
     reducerPath: 'api',
     baseQuery,
     refetchOnReconnect: true,
-    tagTypes: ['auth'],
+    tagTypes: ['auth', "queue"],
     endpoints: () => ({}),
 });

@@ -1,14 +1,14 @@
-import ComponentsDashboardSales from '@/components/dashboard/components-dashboard-sales';
+import HomePanel from '@/components/HomePanel';
 import { Metadata } from 'next';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Sales Admin',
+    title: 'Home Panel',
 };
 
 const Sales = () => {
     // return <ComponentsDashboardSales />;
-    return <div> kaimuoni </div>
+    return <HomePanel />
 };
 
 export default Sales;

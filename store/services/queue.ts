@@ -10,6 +10,7 @@ const queueSlice = api.injectEndpoints({
     endpoints: (build) => ({
         getQueue: build.query<Queue, { id: string }>({
             query: ({ id }) => `/queue/${id}`,
+            providesTags: ['queue'],
         }),
         createQueue: build.mutation<any, QueueCreate>({
             query: (body) => ({
@@ -17,9 +18,11 @@ const queueSlice = api.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['queue'],
         }),
         consultQueue: build.query<QueueConsultation, { id: string }>({
             query: ({ id }) => `/queue/${id}/consult`,
+            providesTags: ['queue'],
         }),
     }),
 });
