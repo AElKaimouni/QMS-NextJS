@@ -2,6 +2,7 @@ import ContentAnimation from '@/components/layouts/content-animation';
 import Footer from '@/components/layouts/footer';
 import Header from '@/components/layouts/header';
 import MainContainer from '@/components/layouts/main-container';
+import MobileNav from '@/components/layouts/mobile-nav';
 import Overlay from '@/components/layouts/overlay';
 import ScrollToTop from '@/components/layouts/scroll-to-top';
 import Setting from '@/components/layouts/setting';
@@ -17,12 +18,12 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
                 <ScrollToTop />
 
                 {/* BEGIN APP SETTING LAUNCHER */}
-                <Setting />
+                {/* <Setting /> */}
                 {/* END APP SETTING LAUNCHER */}
 
                 <MainContainer>
                     {/* BEGIN SIDEBAR */}
-                    <Sidebar />
+                    {/* <Sidebar /> */}
                     {/* END SIDEBAR */}
 
                     <div className="main-content flex min-h-screen flex-col">
@@ -38,6 +39,8 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
                         <Footer />
                         {/* END FOOTER */}
                         <Portals />
+
+                        <MobileNav />
                     </div>
                 </MainContainer>
             </div>

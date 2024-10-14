@@ -6,30 +6,22 @@ import { IRootState } from '@/store';
 import { toggleTheme, toggleSidebar, toggleRTL } from '@/store/themeConfigSlice';
 import Dropdown from '@/components/dropdown';
 import IconMenu from '@/components/icon/icon-menu';
-import IconCalendar from '@/components/icon/icon-calendar';
-import IconEdit from '@/components/icon/icon-edit';
-import IconChatNotification from '@/components/icon/icon-chat-notification';
-import IconSearch from '@/components/icon/icon-search';
 import IconXCircle from '@/components/icon/icon-x-circle';
 import IconSun from '@/components/icon/icon-sun';
 import IconMoon from '@/components/icon/icon-moon';
 import IconLaptop from '@/components/icon/icon-laptop';
-import IconMailDot from '@/components/icon/icon-mail-dot';
-import IconArrowLeft from '@/components/icon/icon-arrow-left';
 import IconInfoCircle from '@/components/icon/icon-info-circle';
 import IconBellBing from '@/components/icon/icon-bell-bing';
 import IconUser from '@/components/icon/icon-user';
 import IconMail from '@/components/icon/icon-mail';
 import IconLockDots from '@/components/icon/icon-lock-dots';
 import IconLogout from '@/components/icon/icon-logout';
-import IconMenuDashboard from '@/components/icon/menu/icon-menu-dashboard';
 import { usePathname, useRouter } from 'next/navigation';
 import { getTranslation } from '@/i18n';
-import { MdAnalytics } from "react-icons/md";
-import { FaCirclePlus } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
-import { SiGoogleanalytics } from "react-icons/si";
-import { IoMdSettings } from "react-icons/io";
+import { ImStatsBars } from "react-icons/im";
+import { FaUsersBetweenLines } from "react-icons/fa6";
+
 
 const Header = () => {
     const pathname = usePathname();
@@ -151,20 +143,44 @@ const Header = () => {
                             <img className="inline w-8 ltr:-ml-1 rtl:-mr-1" src="/assets/images/logo.svg" alt="logo" />
                             <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">VRISTO</span>
                         </Link>
-                        <button
+                        {/* <button
                             type="button"
                             className="collapse-icon flex flex-none rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary ltr:ml-2 rtl:mr-2 dark:bg-dark/40 dark:text-[#d0d2d6] dark:hover:bg-dark/60 dark:hover:text-primary lg:hidden"
                             onClick={() => dispatch(toggleSidebar())}
                         >
                             <IconMenu className="h-5 w-5" />
-                        </button>
+                        </button> */}
                     </div>
 
 
                     <div className="flex items-center space-x-1.5 ltr:ml-auto rtl:mr-auto rtl:space-x-reverse dark:text-[#d0d2d6] sm:flex-1 ltr:sm:ml-0 sm:rtl:mr-0 lg:space-x-2">
                         <div className="sm:ltr:mr-auto sm:rtl:ml-auto">
-                            
-                            
+                            <ul style={{ boxShadow: "none" }} className="horizontal-menu md:!flex ml-20 font-semibold text-black rtl:space-x-reverse lg:space-x-1.5 xl:space-x-8">
+                                <li className="menu nav-item relative">
+                                    <Link href={"/"} type="button" className="nav-link active">
+                                        <div className="flex items-center">
+                                            <FaHome className="shrink-0 dark:!text-white-dark" />
+                                            <span className="px-1 dark:!text-white-dark">{t('home')}</span>
+                                        </div>
+                                    </Link>
+                                </li>
+                                <li className="menu nav-item relative">
+                                    <Link href={"/queues"} type="button" className="nav-link">
+                                        <div className="flex items-center">
+                                            <FaUsersBetweenLines className="shrink-0 dark:!text-white-dark" />
+                                            <span className="px-1 dark:!text-white-dark">{t('queues')}</span>
+                                        </div>
+                                    </Link>
+                                </li>
+                                <li className="menu nav-item relative">
+                                    <Link href={"/analytics"} type="button" className="nav-link">
+                                        <div className="flex items-center">
+                                            <ImStatsBars className="shrink-0 dark:!text-white-dark" />
+                                            <span className="px-1 dark:!text-white-dark">{t('analytics')}</span>
+                                        </div>
+                                    </Link>
+                                </li>
+                            </ul>
                         </div>
                         <div>
                             {themeConfig.theme === 'light' ? (
@@ -357,49 +373,7 @@ const Header = () => {
                     </div>
                 </div>
 
-                {/* horizontal menu */}
-                <ul className="horizontal-menu hidden border-t border-[#ebedf2] bg-white px-6 py-1.5 font-semibold text-black rtl:space-x-reverse dark:border-[#191e3a] dark:bg-black dark:text-white-dark lg:space-x-1.5 xl:space-x-8">
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link active">
-                            <div className="flex items-center">
-                                <FaHome className="shrink-0" />
-                                <span className="px-1">{t('home')}</span>
-                            </div>
-                        </button>
-                    </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <MdAnalytics className="shrink-0" />
-                                <span className="px-1">{t('analitics')}</span>
-                            </div>
-                        </button>
-                    </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <FaCirclePlus className="shrink-0" />
-                                <span className="px-1">{t('new_queue')}</span>
-                            </div>
-                        </button>
-                    </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <SiGoogleanalytics className="shrink-0" />
-                                <span className="px-1">{t('metrics')}</span>
-                            </div>
-                        </button>
-                    </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <IoMdSettings className="shrink-0" />
-                                <span className="px-1">{t('configurations')}</span>
-                            </div>
-                        </button>
-                    </li>
-                </ul>
+                
             </div>
         </header>
     );
