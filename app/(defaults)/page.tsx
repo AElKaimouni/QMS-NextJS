@@ -7,7 +7,8 @@ export const metadata: Metadata = {
 };
 
 const Sales = () => {
-    return <ComponentsDashboardSales />;
+    // return <ComponentsDashboardSales />;
+    return <div> kaimuoni </div>
 };
 
 export default Sales;
