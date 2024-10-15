@@ -15,7 +15,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
             {/* BEGIN MAIN CONTAINER */}
             <div className="relative">
                 <Overlay />
-                <ScrollToTop />
+                {/* <ScrollToTop /> */}
 
                 {/* BEGIN APP SETTING LAUNCHER */}
                 {/* <Setting /> */}
@@ -36,7 +36,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
                         {/* END CONTENT AREA */}
 
                         {/* BEGIN FOOTER */}
-                        <Footer />
+                        {/* <Footer /> */}
                         {/* END FOOTER */}
                         <Portals />
 

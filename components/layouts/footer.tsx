@@ -1,7 +1,5 @@
 const Footer = () => {
-    return (
-            <div className="p-6 pt-0 sm:hidden md:block mt-auto text-center dark:text-white-dark ltr:sm:text-left rtl:sm:text-right">© {new Date().getFullYear()}. Vristo All rights reserved.</div>
-    );
+    return <></>;
 };
 
 export default Footer;
