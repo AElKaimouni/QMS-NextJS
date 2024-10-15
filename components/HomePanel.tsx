@@ -9,27 +9,41 @@ export default function HomePanel() {
     const isRtl = useTypedSelector((state) => state.themeConfig.rtlClass) === 'rtl';
 
     return (
-        <div className="flex h-full w-full flex-col justify-center gap-4 sm:flex-row sm:flex-wrap">
+        <div className="flex h-full w-full flex-col justify-center items-center gap-4 sm:flex-row sm:flex-wrap">
             <div className="relative w-full max-w-[19rem] overflow-hidden rounded border border-[#e0e6ed] bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none">
                 <div className="relative z-10 px-6 py-7">
                     <div className="flex justify-between">
                         <div className="mb-5 inline-block rounded-full bg-[#D7E8FF] p-2 text-[#2673DD]">
                             <MdOutlineTimer className="size-6" />
                         </div>
-                        <Dropdown
-                            placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                            button={
-                                <div className="dark:text-with-light mb-5 inline-block rounded-full p-2 text-[#3b3f5c] hover:bg-[#E0E6ED66]">
-                                    <BsThreeDotsVertical className="size-5" />
-                                </div>
-                            }
-                        >
-                            <ul className="!min-w-[170px] bg-white">
-                                <li>
-                                    <button type="button">Delete queue</button>
-                                </li>
-                            </ul>
-                        </Dropdown>
+                        <div className="dropdown">
+                            <Dropdown
+                                placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
+                                btnClassName="dropdown-toggle"
+                                button={
+                                    <>
+                                        <span>
+                                            <BsThreeDotsVertical className="inline-block ltr:ml-1 rtl:mr-1" />
+                                        </span>
+                                    </>
+                                }
+                            >
+                                <ul className="!min-w-[170px]">
+                                    <li>
+                                        <button type="button">Action</button>
+                                    </li>
+                                    <li>
+                                        <button type="button">Another action</button>
+                                    </li>
+                                    <li>
+                                        <button type="button">Something else here</button>
+                                    </li>
+                                    <li>
+                                        <button type="button">Separated link</button>
+                                    </li>
+                                </ul>
+                            </Dropdown>
+                        </div>
                     </div>
                     <h5 className="mb-2 text-xl font-semibold text-[#3b3f5c] dark:text-white-light">23</h5>
                     <svg width="22" height="13" viewBox="0 0 22 13" fill="none" xmlns="http://www.w3.org/2000/svg">
