@@ -61,6 +61,13 @@ module.exports = {
                     light: '#e0e6ed',
                     dark: '#888ea8',
                 },
+                queueStatus: {
+                    created: '#8EC5FC', // Light Blue
+                    active: '#34D399', // Green
+                    paused: '#F59E0B', // Orange
+                    closed: '#6B7280', // Dark Gray
+                    deleted: '#EF4444', // Red
+                },
             },
             fontFamily: {
                 nunito: ['var(--font-nunito)'],

@@ -1,4 +1,4 @@
-import { Queue, QueueConsultation } from '@/types';
+import { Queue, QueueConsultation } from '@/types/queue';
 import { api } from './api';
 
 interface QueueCreate {
@@ -24,7 +24,11 @@ const queueSlice = api.injectEndpoints({
             query: ({ id }) => `/queue/${id}/consult`,
             providesTags: ['queue'],
         }),
+        getAllQueues: build.query<Queue[], void>({
+            query: () => '/queue/all',
+            providesTags: ['queue'],
+        }),
     }),
 });
 
-export const { useGetQueueQuery, useCreateQueueMutation, useConsultQueueQuery } = queueSlice;
+export const { useGetQueueQuery, useCreateQueueMutation, useConsultQueueQuery, useGetAllQueuesQuery } = queueSlice;

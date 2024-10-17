@@ -1,6 +1,5 @@
 import HomePanel from '@/components/HomePanel';
 import { Metadata } from 'next';
-import React from 'react';
 
 export const metadata: Metadata = {
     title: 'Home Panel',
@@ -8,7 +7,7 @@ export const metadata: Metadata = {
 
 const Sales = () => {
     // return <ComponentsDashboardSales />;
-    return <HomePanel />
+    return <HomePanel />;
 };
 
 export default Sales;
