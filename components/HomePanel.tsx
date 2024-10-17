@@ -11,7 +11,7 @@ export default function HomePanel() {
     const router = useRouter();
 
     return (
-        <div className="flex h-full w-full flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
+        <div className="flex h-full py-6 w-full flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
             <div className="relative w-full max-w-[19rem] rounded border border-[#e0e6ed] bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none">
                 <div className="relative z-10 px-6 py-7">
                     <div className="flex justify-between">

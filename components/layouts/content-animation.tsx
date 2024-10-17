@@ -22,7 +22,7 @@ const ContentAnimation = ({ children }: { children: React.ReactNode }) => {
     return (
         <>
             {/* BEGIN CONTENT AREA */}
-            <div className={`${animation} animate__animated`}>{children}</div>
+            <div className={`${animation} animate__animated flex-grow`}>{children}</div>
             {/* END CONTENT AREA */}
         </>
     );
