@@ -15,6 +15,7 @@ export interface Queue {
     status: QueueStatus;
     createdAt: string;
     updatedAt?: string | null;
+    config?: Record<string, any>;
 }
 
 export interface QueueConsultation extends Queue {
