@@ -5,6 +5,7 @@ import { IRootState } from '@/store';
 import { toggleRTL, toggleTheme, toggleMenu, toggleLayout, toggleAnimation, toggleNavbar, toggleSemidark } from '@/store/themeConfigSlice';
 import Loading from '@/components/layouts/loading';
 import { getTranslation } from '@/i18n';
+import { setAuth } from './store/authSlice';
 
 function App({ children }: PropsWithChildren) {
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
@@ -20,6 +21,7 @@ function App({ children }: PropsWithChildren) {
         dispatch(toggleAnimation(localStorage.getItem('animation') || themeConfig.animation));
         dispatch(toggleNavbar(localStorage.getItem('navbar') || themeConfig.navbar));
         dispatch(toggleSemidark(localStorage.getItem('semidark') || themeConfig.semidark));
+        dispatch(setAuth(window.localStorage.getItem("JWT_TOKEN") || ""));
         // locale
         initLocale(themeConfig.locale);
 

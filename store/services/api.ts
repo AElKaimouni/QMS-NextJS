@@ -1,16 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IRootState } from '@/store/index';
-
-const dev = process.env.NODE_ENV === 'development';
-
-const baseUrl = dev ? 'http://localhost:8000' : '';
+import { IRootState } from '..';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl,
+    baseUrl: "/api",
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as IRootState).auth.token;
+        //const token = window.localStorage.getItem("JWT_TOKEN");
         if (token) {
-            headers.set('authentication', `Bearer ${token}`);
+            headers.set('Authorization', `Bearer ${token}`);
         }
         return headers;
     },

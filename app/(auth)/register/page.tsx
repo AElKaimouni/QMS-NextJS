@@ -1,18 +1,14 @@
-import ComponentsAuthLoginForm from '@/components/auth/components-auth-login-form';
-import IconFacebookCircle from '@/components/icon/icon-facebook-circle';
-import IconGoogle from '@/components/icon/icon-google';
-import IconInstagram from '@/components/icon/icon-instagram';
-import IconTwitter from '@/components/icon/icon-twitter';
+import ComponentsAuthRegisterForm from '@/components/auth/components-auth-register-form';
 import LanguageDropdown from '@/components/language-dropdown';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
 
 export const metadata: Metadata = {
-    title: 'Login Cover',
+    title: 'Register Cover',
 };
 
-const CoverLogin = () => {
+const CoverRegister = () => {
     return (
         <div>
             <div className="absolute inset-0">
@@ -31,7 +27,7 @@ const CoverLogin = () => {
                                 <img src="/assets/images/auth/logo-white.svg" alt="Logo" className="w-full" />
                             </Link>
                             <div className="mt-24 hidden w-full max-w-[430px] lg:block">
-                                <img src="/assets/images/auth/login.svg" alt="Cover Image" className="w-full" />
+                                <img src="/assets/images/auth/register.svg" alt="Cover Image" className="w-full" />
                             </div>
                         </div>
                     </div>
@@ -43,13 +39,13 @@ const CoverLogin = () => {
                             <LanguageDropdown className="ms-auto w-max" />
                         </div>
                         <div className="w-full max-w-[440px] lg:mt-16">
-                            <div className="mb-10">
-                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign in</h1>
-                                <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p>
+                            <div className="mb-5 text-center">
+                                <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign Up</h1>
+                                {/* <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to register</p> */}
                             </div>
-                            <ComponentsAuthLoginForm />
+                            <ComponentsAuthRegisterForm />
 
-                            <div className="relative my-7 text-center md:mb-9">
+                            {/* <div className="relative my-7 text-center md:mb-9">
                                 <span className="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"></span>
                                 <span className="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">or</span>
                             </div>
@@ -92,11 +88,11 @@ const CoverLogin = () => {
                                         </Link>
                                     </li>
                                 </ul>
-                            </div>
-                            <div className="text-center dark:text-white">
-                                Don&apos;t have an account ?&nbsp;
-                                <Link href="/auth/cover-register" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
-                                    SIGN UP
+                            </div> */}
+                            <div className="mt-10 text-center dark:text-white">
+                                Already have an account ?&nbsp;
+                                <Link href="/auth/cover-login" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
+                                    SIGN IN
                                 </Link>
                             </div>
                         </div>
@@ -108,4 +104,4 @@ const CoverLogin = () => {
     );
 };
 
-export default CoverLogin;
+export default CoverRegister;

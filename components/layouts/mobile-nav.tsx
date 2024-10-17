@@ -44,7 +44,7 @@ const MobileNav = () => {
     ];
 
     return (
-        <div className="mobile-nav md:hidden lg:hidden fixed z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-1/2 dark:bg-black dark:border-gray-800">
+        <div style={{ width: "calc(100% - 2rem)" }} className="mobile-nav md:hidden lg:hidden fixed z-50 h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-1/2 dark:bg-black dark:border-gray-800">
             <div className="grid h-full max-w-lg grid-cols-5 mx-auto">
                 {menuItems.map((item, index) => (
                     <>
