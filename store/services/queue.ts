@@ -1,18 +1,25 @@
-import { Queue, QueueConsultation } from '@/types/queue';
+import { Queue, QueueConsultation, QueueCreation } from '@/types/queue';
 import { api } from './api';
 
-interface QueueCreate {
-    title: string;
-    description: string;
-}
+type GetQueueParams = {
+    id: string;
+};
+
+type ConsultQueueParams = {
+    id: string;
+};
+
+type CallNextInQueueParams = {
+    id: string;
+};
 
 const queueSlice = api.injectEndpoints({
     endpoints: (build) => ({
-        getQueue: build.query<Queue, { id: string }>({
+        getQueue: build.query<Queue, GetQueueParams>({
             query: ({ id }) => `/queue/${id}`,
             providesTags: ['queue'],
         }),
-        createQueue: build.mutation<any, QueueCreate>({
+        createQueue: build.mutation<any, QueueCreation>({
             query: (body) => ({
                 url: '/queue',
                 method: 'POST',
@@ -20,7 +27,7 @@ const queueSlice = api.injectEndpoints({
             }),
             invalidatesTags: ['queue'],
         }),
-        consultQueue: build.query<QueueConsultation, { id: string }>({
+        consultQueue: build.query<QueueConsultation, ConsultQueueParams>({
             query: ({ id }) => `/queue/${id}/consult`,
             providesTags: ['queue'],
         }),
@@ -28,7 +35,11 @@ const queueSlice = api.injectEndpoints({
             query: () => '/queue/all',
             providesTags: ['queue'],
         }),
+        callNextInQueue: build.mutation<void, CallNextInQueueParams>({
+            query: ({ id }) => ({ url: `/queue/${id}/next`, method: 'POST' }),
+            invalidatesTags: ['reservation', 'queue'],
+        }),
     }),
 });
 
-export const { useGetQueueQuery, useCreateQueueMutation, useConsultQueueQuery, useGetAllQueuesQuery } = queueSlice;
+export const { useGetQueueQuery, useCreateQueueMutation, useConsultQueueQuery, useGetAllQueuesQuery, useCallNextInQueueMutation } = queueSlice;

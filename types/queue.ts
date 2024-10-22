@@ -22,3 +22,20 @@ export interface QueueConsultation extends Queue {
     averageServeTime: number;
     averageWaitTime: number;
 }
+
+export interface QueueCreation {
+    title: string;
+    description: string;
+    config: {
+        time?: {
+            days: number[];
+            startTime: string;
+            endTime: string;
+        };
+        fields?: {
+            name: string;
+            type: string;
+            required: boolean;
+        }[];
+    };
+}

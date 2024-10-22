@@ -3,12 +3,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { api } from './services/api';
 import authSlice from '@/store/authSlice';
 import themeConfigSlice from '@/store/themeConfigSlice';
+import createQueueSlice from '@/store/createQueueSlice';
 
 export const createStore = (options?: ConfigureStoreOptions['preloadedState'] | undefined) =>
     configureStore({
         reducer: {
             [api.reducerPath]: api.reducer,
             auth: authSlice,
+            createQueue: createQueueSlice,
             themeConfig: themeConfigSlice,
         },
         middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),

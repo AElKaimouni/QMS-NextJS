@@ -1,0 +1,24 @@
+import { getApiWithAuth } from '@/apis';
+import { QueueCreation } from '@/types/queue';
+import { AxiosError } from 'axios';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
+    const body: QueueCreation = await request.json();
+    const api = getApiWithAuth(request);
+
+    const path = request.nextUrl.pathname.replace('/api', '');
+
+    try {
+        const res = await api.post(path, body);
+
+        return NextResponse.json(res.data, { status: 200 });
+    } catch (error) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+            return NextResponse.json({ message: 'Unvalid Credentails' }, { status: 401 });
+        }
+
+        console.error(error);
+        return NextResponse.json({}, { status: 500 });
+    }
+}

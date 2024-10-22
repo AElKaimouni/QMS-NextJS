@@ -5,7 +5,6 @@ import { QueueCard } from './QueueCard';
 import Loader from './loader';
 
 export default function HomePanel() {
-
     const { data: queues = [], error, isLoading: isLoadingQueues, isFetching: isFetchingQueues } = useGetAllQueuesQuery();
 
     const errorQueue = error as { message: string };
@@ -27,8 +26,7 @@ export default function HomePanel() {
     }
 
     return (
-
-        <div className="flex h-full w-full flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
+        <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-4 sm:flex-row sm:flex-wrap">
             {queues.map((queue) => (
                 <QueueCard key={queue.id} queue={queue} />
             ))}

@@ -1,12 +1,7 @@
 import ComponentsAuthLoginForm from '@/components/auth/components-auth-login-form';
-import IconFacebookCircle from '@/components/icon/icon-facebook-circle';
-import IconGoogle from '@/components/icon/icon-google';
-import IconInstagram from '@/components/icon/icon-instagram';
-import IconTwitter from '@/components/icon/icon-twitter';
 import LanguageDropdown from '@/components/language-dropdown';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import React from 'react';
 
 export const metadata: Metadata = {
     title: 'Login Cover',
@@ -95,12 +90,11 @@ const CoverLogin = () => {
                             </div> */}
                             <div className="text-center mt-10 dark:text-white">
                                 Don&apos;t have an account ?&nbsp;
-                                <Link href="/auth/cover-register" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
+                                <Link href="/register" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
                                     SIGN UP
                                 </Link>
                             </div>
                         </div>
-                        <p className="absolute bottom-6 w-full text-center dark:text-white">© {new Date().getFullYear()}.VRISTO All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

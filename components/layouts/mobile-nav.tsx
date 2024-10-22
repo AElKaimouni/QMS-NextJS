@@ -29,7 +29,7 @@ const MobileNav = () => {
         {
             title: t("new_queue"),
             Icon: FaPlus,
-            link: "/queues"
+            link: "/queues/new"
         },
         {
             title: t("metrics"),
