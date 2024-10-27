@@ -36,8 +36,8 @@ const ComponentsAuthRegisterForm = () => {
 
         if(isError) throw error;
 
-        console.log(data);
-        //router.push('/');
+        // console.log(data);
+        router.push('/login');
     };
     
     return (

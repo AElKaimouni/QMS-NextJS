@@ -1,6 +1,7 @@
 import { MdOutlineTimer } from 'react-icons/md';
 import { Queue } from '@/types/queue';
 import { QueueCardDropdown } from './QueueCardDropdown';
+import Link from 'next/link';
 
 interface QueueCardProps {
     queue: Queue;
@@ -16,7 +17,11 @@ const queueStatusClasses = {
 
 export const QueueCard = ({ queue }: QueueCardProps) => {
     return (
-        <div className="relative w-full max-w-[19rem] rounded border border-[#e0e6ed] bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none">
+        <Link
+            href={`/queues/${queue.id}`}
+            passHref
+            className="relative w-full cursor-pointer rounded border border-[#e0e6ed] bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none"
+        >
             <div className="relative z-10 px-6 py-7">
                 <div className="flex justify-between">
                     <div className="mb-5 inline-block rounded-full bg-[#D7E8FF] p-2 text-[#2673DD]">
@@ -50,6 +55,6 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };

@@ -39,7 +39,33 @@ const queueSlice = api.injectEndpoints({
             query: ({ id }) => ({ url: `/queue/${id}/next`, method: 'POST' }),
             invalidatesTags: ['reservation', 'queue'],
         }),
+        startQueue: build.mutation<void, GetQueueParams>({
+            query: ({ id }) => ({ url: `/queue/${id}/start`, method: 'POST' }),
+            invalidatesTags: ['queue'],
+        }),
+        pauseQueue: build.mutation<void, GetQueueParams>({
+            query: ({ id }) => ({ url: `/queue/${id}/pause`, method: 'POST' }),
+            invalidatesTags: ['queue'],
+        }),
+        closeQueue: build.mutation<void, GetQueueParams>({
+            query: ({ id }) => ({ url: `/queue/${id}/close`, method: 'POST' }),
+            invalidatesTags: ['queue'],
+        }),
+        deleteQueue: build.mutation<void, GetQueueParams>({
+            query: ({ id }) => ({ url: `/queue/${id}`, method: 'DELETE' }),
+            invalidatesTags: ['queue'],
+        }),
     }),
 });
 
-export const { useGetQueueQuery, useCreateQueueMutation, useConsultQueueQuery, useGetAllQueuesQuery, useCallNextInQueueMutation } = queueSlice;
+export const {
+    useGetQueueQuery,
+    useCreateQueueMutation,
+    useConsultQueueQuery,
+    useGetAllQueuesQuery,
+    useCallNextInQueueMutation,
+    useStartQueueMutation,
+    useCloseQueueMutation,
+    useDeleteQueueMutation,
+    usePauseQueueMutation,
+} = queueSlice;

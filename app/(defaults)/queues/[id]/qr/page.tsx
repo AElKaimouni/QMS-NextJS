@@ -12,6 +12,13 @@ interface QueueDetailsParams {
     };
 }
 
+interface QueueError {
+    status?: number;
+    data?: {
+        message?: string;
+    };
+}
+
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function QueueDetails({ params }: QueueDetailsParams) {
@@ -19,6 +26,8 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
     const { id } = params;
 
     const { data: queue, error, isLoading } = useGetQueueQuery({ id });
+
+    const queueError = error as QueueError;
 
     if (isLoading) {
         return (
@@ -31,7 +40,7 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
     if (error || !queue) {
         return (
             <div>
-                <p className="text-danger">{error?.message}</p>
+                <p className="text-danger">{queueError?.data?.message}</p>
             </div>
         );
     }
@@ -66,7 +75,7 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
                         <input type="text" value={queue.config?.time.endTime ?? ''} readOnly className="w-full rounded-lg border border-gray-300 p-2" />
                     </div>
                     <div className="mt-2 rounded-lg border border-gray-300 p-2">
-                        <span>{queue.config?.time.days.map((index): number => daysOfWeek[index]).join(' - ')}</span>
+                        <span>{queue.config?.time.days.map((index: number) => daysOfWeek[index]).join(' - ')}</span>
                     </div>
                 </div>
 

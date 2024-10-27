@@ -6,15 +6,23 @@ import { getTranslation } from '@/i18n';
 import { useGetReservationsQuery } from '@/store/services/reservation';
 import { getRelativeTimeString } from '@/utils/getRelativetimeString';
 import { Tab } from '@headlessui/react';
-import { Fragment } from 'react';
-import { FaPlus } from 'react-icons/fa6';
+import { Fragment, useState } from 'react';
 import { FiHome } from 'react-icons/fi';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
-import { useCallNextInQueueMutation } from '@/store/services/queue';
+import { useCallNextInQueueMutation, useStartQueueMutation, useCloseQueueMutation, useDeleteQueueMutation, usePauseQueueMutation } from '@/store/services/queue';
+import { FaPlus, FaPlay, FaPause, FaTrash } from 'react-icons/fa6';
+import { QueueStatus } from '@/types/queue';
 
 interface QueueDetailsParams {
     params: {
         id: string;
+    };
+}
+
+interface ReservationError {
+    status?: number;
+    data?: {
+        message?: string;
     };
 }
 
@@ -24,9 +32,18 @@ export default function QueueServing({ params }: QueueDetailsParams) {
     const { id } = params;
     const { t, i18n } = getTranslation();
 
+    const [startQueue, { isLoading: loadingStartQueue, error: errorStartQueue }] = useStartQueueMutation();
+    const [closeQueue, { isLoading: loadingCloseQueue, error: errorCloseQueue }] = useCloseQueueMutation();
+    const [deleteQueue, { isLoading: loadingDeleteQueue, error: errorDeleteQueue }] = useDeleteQueueMutation();
+    const [pauseQueue, { isLoading: loadingPauseQueue, error: errorPauseQueue }] = usePauseQueueMutation();
+
     const [callNextInQueue, { isLoading: loadingCallNextInQueue, error: errorCallNextInQueue }] = useCallNextInQueueMutation();
 
-    const { data: reservations, error: reservationError, isLoading: loadingReservations } = useGetReservationsQuery({ id, page: 1, size: 10, scope: 'all' });
+    const { data: reservations, error, isLoading: loadingReservations } = useGetReservationsQuery({ id, page: 1, size: 10, scope: 'all' });
+
+    const reservationError = error as ReservationError;
+
+    const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.CREATED);
 
     if (loadingReservations) {
         return (
@@ -39,7 +56,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
     if (reservationError || !reservations) {
         return (
             <div>
-                <p className="text-danger">{reservationError?.message}</p>
+                <p className="text-danger">{reservationError?.data?.message}</p>
             </div>
         );
     }
@@ -47,7 +64,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
     if (reservations?.content.length === 0) {
         return (
             <div className="flex items-center justify-center p-5">
-                <p>{t('No reservations found')}</p>
+                <p>{t('No reservations yet')}</p>
             </div>
         );
     }
@@ -61,6 +78,46 @@ export default function QueueServing({ params }: QueueDetailsParams) {
     const handleCallNext = () => {
         callNextInQueue({ id })
             .unwrap()
+            .catch((error) => console.error(error));
+    };
+
+    // Queue management functions
+    const handleStartQueue = () => {
+        startQueue({ id })
+            .unwrap()
+            .then(() => {
+                setQueueStatus(QueueStatus.ACTIVE);
+            })
+            .catch((error) => console.error(error));
+    };
+
+    // Loading for every queue management function
+    const loadingQueueManagement = loadingStartQueue || loadingPauseQueue || loadingCloseQueue || loadingDeleteQueue;
+
+    const handlePauseQueue = () => {
+        pauseQueue({ id })
+            .unwrap()
+            .then(() => {
+                setQueueStatus(QueueStatus.PAUSED);
+            })
+            .catch((error) => console.error(error));
+    };
+
+    const handleCloseQueue = () => {
+        closeQueue({ id })
+            .unwrap()
+            .then(() => {
+                setQueueStatus(QueueStatus.CLOSED);
+            })
+            .catch((error) => console.error(error));
+    };
+
+    const handleDeleteQueue = () => {
+        deleteQueue({ id })
+            .unwrap()
+            .then(() => {
+                setQueueStatus(QueueStatus.DELETED);
+            })
             .catch((error) => console.error(error));
     };
 
@@ -93,6 +150,33 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                         )}
                     </Tab>
                 </Tab.List>
+            </div>
+
+            <div className="my-6 grid grid-cols-2 justify-center gap-4 px-6 md:grid-cols-4">
+                <button
+                    className="btn btn-success transform text-sm transition duration-300 hover:scale-105 md:text-base"
+                    onClick={handleStartQueue}
+                    disabled={queueStatus === QueueStatus.ACTIVE || loadingQueueManagement}
+                >
+                    <FaPlay className="mr-1 md:mr-2" /> {t('Start Queue')}
+                </button>
+                <button
+                    className="btn btn-warning transform text-sm transition duration-300 hover:scale-105 md:text-base"
+                    onClick={handlePauseQueue}
+                    disabled={queueStatus !== QueueStatus.ACTIVE || loadingQueueManagement}
+                >
+                    <FaPause className="mr-1 md:mr-2" /> {t('Pause Queue')}
+                </button>
+                <button
+                    className="btn btn-danger transform text-sm transition duration-300 hover:scale-105 md:text-base"
+                    onClick={handleCloseQueue}
+                    disabled={queueStatus === QueueStatus.CLOSED || loadingQueueManagement}
+                >
+                    {t('Close Queue')}
+                </button>
+                <button className="btn btn-danger transform text-sm transition duration-300 hover:scale-105 md:text-base" onClick={handleDeleteQueue} disabled={loadingQueueManagement}>
+                    <FaTrash className="mr-1 md:mr-2" /> {t('Delete Queue')}
+                </button>
             </div>
 
             <Tab.Panels className="p-6 pt-0">
@@ -154,11 +238,11 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                                     {servedList.length > 0 ? (
                                         <>
                                             {servedList.map((served) => (
-                                                <div className="rounded-xl border border-[#e0e6ed] bg-white p-4 shadow dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
+                                                <div key={served.id} className="rounded-xl border border-[#e0e6ed] bg-white p-4 shadow dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
                                                     <p className="text-lg font-medium">
                                                         {served.position}: {served.email}
                                                     </p>
-                                                    <p className="mt-2 text-xs text-gray-600 text-right">
+                                                    <p className="mt-2 text-right text-xs text-gray-600">
                                                         {t('Time')}:{' '}
                                                         {new Date(Date.parse(served?.servedAt ?? '')).toLocaleString(navigator.language, {
                                                             dateStyle: 'short',
