@@ -31,9 +31,9 @@ const MobileNav = () => {
             link: '/analytics',
         },
         {
-            title: t('new_queue'),
-            Icon: FaPlus,
-            link: '/queues/new',
+            title: t('Manage Queue'),
+            Icon: TiClipboard,
+            link: '/queue/manage',
         },
         {
             title: t('metrics'),
@@ -58,10 +58,11 @@ const MobileNav = () => {
             Icon: MdWorkspaces,
             link: '/workspaces',
         },
+
         {
-            title: t('Manage Workspaces'),
-            Icon: TiClipboard,
-            link: '/workspaces/manage',
+            title: t('new_queue'),
+            Icon: FaPlus,
+            link: '/queues/new',
         },
         {
             title: t('metrics'),
