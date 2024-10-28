@@ -8,6 +8,7 @@ import { useTypedSelector } from '@/store';
 import { getTranslation } from '@/i18n';
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
 import { useCreateQueueMutation } from '@/store/services/queue';
+import { useRouter } from 'next/navigation';
 
 const steps = [
     { shortLabel: 'Description', fullLabel: 'Queue Description', component: QueueDescription },
@@ -17,6 +18,8 @@ const steps = [
 
 export default function CreateQueueForm() {
     const { t } = getTranslation();
+    const router = useRouter();
+
     const [currentStep, setCurrentStep] = useState(0);
 
     const formData = useTypedSelector((state) => state.createQueue);
@@ -34,7 +37,10 @@ export default function CreateQueueForm() {
         // console.log(formData)
         createQueue(formData)
             .unwrap()
-            .then(() => {});
+            .then(() => {
+                router.push('/');
+            });
+
     };
 
     const CurrentStepComponent = steps[currentStep].component;

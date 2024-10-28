@@ -5,6 +5,9 @@ import QRCode from 'react-qr-code';
 import { TbCopy } from 'react-icons/tb';
 import { useGetQueueQuery } from '@/store/services/queue';
 import Loader from '@/components/loader';
+import { QueueStatus } from '@/types/queue';
+import { getTranslation } from '@/i18n';
+import { IoIosAlert } from 'react-icons/io';
 
 interface QueueDetailsParams {
     params: {
@@ -20,9 +23,10 @@ interface QueueError {
 }
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const { t, i18n } = getTranslation();
+const qrCodeValue = 'http://www.admin-dashboard.com';
 
 export default function QueueDetails({ params }: QueueDetailsParams) {
-    const qrCodeValue = 'http://www.admin-dashboard.com';
     const { id } = params;
 
     const { data: queue, error, isLoading } = useGetQueueQuery({ id });
@@ -50,8 +54,16 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50">
-            <div className="w-full max-w-md rounded-lg p-6 shadow-lg">
+        <div className="flex min-h-screen w-full flex-col items-center justify-center bg-gray-50">
+            {queue?.status === QueueStatus.DELETED && (
+                <div className="flex items-center rounded bg-danger-light p-3.5 text-danger dark:bg-danger-dark-light">
+                    <IoIosAlert className="mr-8 size-6" />
+                    <span className="ltr:pr-2 rtl:pl-2">
+                        <strong className="ltr:mr-1 rtl:ml-1">{t('This queue has been deleted')}.</strong>
+                    </span>
+                </div>
+            )}
+            <div className="w-full max-w-md rounded-lg p-6">
                 <div className="mb-4 text-center">
                     <h2 className="text-xl font-semibold text-gray-800">{queue.title}</h2>
                 </div>
@@ -87,7 +99,9 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
                 </div>
 
                 <div className="text-center">
-                    <button className="font-semibold text-blue-600 underline">EDIT QUEUE</button>
+                    <button className="font-semibold text-blue-600 underline" disabled={queue?.status === QueueStatus.DELETED}>
+                        EDIT QUEUE
+                    </button>
                 </div>
             </div>
         </div>

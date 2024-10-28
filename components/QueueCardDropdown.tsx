@@ -3,10 +3,11 @@
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Dropdown from './dropdown';
 import { useTypedSelector } from '@/store';
+import { MouseEventHandler } from 'react';
 
 type DropdownOption = {
     label: string;
-    onClick: () => void;
+    onClick: (e: any) => void;
 };
 
 interface QueueCardDropdownProps {

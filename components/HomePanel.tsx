@@ -27,9 +27,11 @@ export default function HomePanel() {
 
     return (
         <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-4 sm:flex-row sm:flex-wrap">
-            {queues.map((queue) => (
-                <QueueCard key={queue.id} queue={queue} />
-            ))}
+            {queues
+                .toSorted((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+                .map((queue) => (
+                    <QueueCard key={queue.id} queue={queue} />
+                ))}
         </div>
     );
 }

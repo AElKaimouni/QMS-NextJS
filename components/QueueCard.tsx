@@ -1,7 +1,12 @@
+'use client';
+
 import { MdOutlineTimer } from 'react-icons/md';
-import { Queue } from '@/types/queue';
+import { Queue, QueueStatus } from '@/types/queue';
 import { QueueCardDropdown } from './QueueCardDropdown';
 import Link from 'next/link';
+import { useDeleteQueueMutation } from '@/store/services/queue';
+import { MouseEvent } from 'react';
+import { QueryStatus } from '@reduxjs/toolkit/query';
 
 interface QueueCardProps {
     queue: Queue;
@@ -16,9 +21,29 @@ const queueStatusClasses = {
 };
 
 export const QueueCard = ({ queue }: QueueCardProps) => {
+    const [deleteQueue] = useDeleteQueueMutation();
+
+    const handleDeleteQueue = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        deleteQueue({ id: queue.id })
+            .unwrap()
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    const handleDropdownClick = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+    
+    const href = queue.status === QueueStatus.DELETED ? `/queues/${queue.id}/qr` :  `/queues/${queue.id}`;
+
     return (
         <Link
-            href={`/queues/${queue.id}`}
+            href={href}
             passHref
             className="relative w-full cursor-pointer rounded border border-[#e0e6ed] bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none"
         >
@@ -28,20 +53,20 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
                         <MdOutlineTimer className="size-6" />
                     </div>
                     <p className="mt-2 text-lg font-bold">{queue.title}</p>
-                    <div className="dropdown">
+                    <div className="dropdown" onClick={handleDropdownClick}>
                         <QueueCardDropdown
                             dropdownOptions={[
                                 {
                                     label: 'Edit',
-                                    onClick: () => {
+                                    onClick: (e: MouseEvent) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
                                         // router.push(`/queue/${queue.id}/edit`);
                                     },
                                 },
                                 {
                                     label: 'Delete',
-                                    onClick: () => {
-                                        // delete queue
-                                    },
+                                    onClick: handleDeleteQueue,
                                 },
                             ]}
                         />

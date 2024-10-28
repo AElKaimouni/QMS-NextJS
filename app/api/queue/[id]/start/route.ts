@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const path = request.nextUrl.pathname.replace('/api', '');
 
     try {
-        const res = await api.post(path); // Axios already infers the response type
+        const res = await api.post(path);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (e) {

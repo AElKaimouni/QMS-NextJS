@@ -2,20 +2,21 @@ import React from 'react';
 import { getTranslation } from '@/i18n';
 import { useTypedSelector, useAppDispatch } from '@/store';
 import { addField, removeField } from '@/store/createQueueSlice';
+import { FieldType } from '@/types/queue';
 
 const allFields = [
-    { key: 'first_name', label: 'First Name', type: 'text' },
-    { key: 'last_name', label: 'Last Name', type: 'text' },
-    { key: 'email', label: 'Email', type: 'email' },
-    { key: 'phone', label: 'Phone', type: 'tel' },
-    { key: 'address', label: 'Address', type: 'text' },
-    { key: 'city', label: 'City', type: 'text' },
-    { key: 'state', label: 'State', type: 'text' },
-    { key: 'zip', label: 'Zip', type: 'text' },
-    { key: 'country', label: 'Country', type: 'text' },
-    { key: 'company', label: 'Company', type: 'text' },
-    { key: 'job_title', label: 'Job Title', type: 'text' },
-    { key: 'notes', label: 'Notes', type: 'text' },
+    { key: 'first_name', label: 'First Name', type: FieldType.TEXT },
+    { key: 'last_name', label: 'Last Name', type: FieldType.TEXT },
+    { key: 'email', label: 'Email', type: FieldType.EMAIL },
+    { key: 'phone', label: 'Phone', type: FieldType.PHONE },
+    { key: 'address', label: 'Address', type: FieldType.TEXT },
+    { key: 'city', label: 'City', type: FieldType.TEXT },
+    { key: 'state', label: 'State', type: FieldType.TEXT },
+    { key: 'zip', label: 'Zip', type: FieldType.TEXT },
+    { key: 'country', label: 'Country', type: FieldType.TEXT },
+    { key: 'company', label: 'Company', type: FieldType.TEXT },
+    { key: 'job_title', label: 'Job Title', type: FieldType.TEXT },
+    { key: 'notes', label: 'Notes', type: FieldType.TEXT },
 ];
 
 export default function QueueClientFields() {

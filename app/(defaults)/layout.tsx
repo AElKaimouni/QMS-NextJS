@@ -1,13 +1,9 @@
-import ContentAnimation from '@/components/layouts/content-animation';
-import Footer from '@/components/layouts/footer';
 import Header from '@/components/layouts/header';
 import MainContainer from '@/components/layouts/main-container';
-import MobileNav from '@/components/layouts/mobile-nav';
 import Overlay from '@/components/layouts/overlay';
-import ScrollToTop from '@/components/layouts/scroll-to-top';
-import Setting from '@/components/layouts/setting';
-import Sidebar from '@/components/layouts/sidebar';
 import Portals from '@/components/portals';
+import ContentAnimation from '@/components/layouts/content-animation';
+import MobileNav from '@/components/layouts/mobile-nav';
 
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -15,11 +11,6 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
             {/* BEGIN MAIN CONTAINER */}
             <div className="relative">
                 <Overlay />
-                {/* <ScrollToTop /> */}
-
-                {/* BEGIN APP SETTING LAUNCHER */}
-                {/* <Setting /> */}
-                {/* END APP SETTING LAUNCHER */}
 
                 <MainContainer>
                     {/* BEGIN SIDEBAR */}
@@ -35,9 +26,6 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
                         <ContentAnimation>{children}</ContentAnimation>
                         {/* END CONTENT AREA */}
 
-                        {/* BEGIN FOOTER */}
-                        {/* <Footer /> */}
-                        {/* END FOOTER */}
                         <Portals />
 
                         <MobileNav />

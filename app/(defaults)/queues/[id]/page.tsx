@@ -9,9 +9,10 @@ import { Tab } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { FiHome } from 'react-icons/fi';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
-import { useCallNextInQueueMutation, useStartQueueMutation, useCloseQueueMutation, useDeleteQueueMutation, usePauseQueueMutation } from '@/store/services/queue';
+import { useCallNextInQueueMutation, useStartQueueMutation, useCloseQueueMutation, useDeleteQueueMutation, usePauseQueueMutation, useGetQueueQuery } from '@/store/services/queue';
 import { FaPlus, FaPlay, FaPause, FaTrash } from 'react-icons/fa6';
 import { QueueStatus } from '@/types/queue';
+import { Dialog, Transition } from '@headlessui/react';
 
 interface QueueDetailsParams {
     params: {
@@ -26,11 +27,23 @@ interface ReservationError {
     };
 }
 
+const queueStatusClasses = {
+    CREATED: 'bg-queueStatus-created',
+    ACTIVE: 'bg-queueStatus-active',
+    PAUSED: 'bg-warning',
+    CLOSED: 'bg-queueStatus-closed',
+    DELETED: 'bg-queueStatus-deleted',
+};
+
 const rtf = new Intl.RelativeTimeFormat('en', { style: 'short', numeric: 'auto' });
+const { t, i18n } = getTranslation();
 
 export default function QueueServing({ params }: QueueDetailsParams) {
     const { id } = params;
-    const { t, i18n } = getTranslation();
+
+    const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+
+    const { data: queue, isLoading: loadingQueue, error: errorQueue } = useGetQueueQuery({ id });
 
     const [startQueue, { isLoading: loadingStartQueue, error: errorStartQueue }] = useStartQueueMutation();
     const [closeQueue, { isLoading: loadingCloseQueue, error: errorCloseQueue }] = useCloseQueueMutation();
@@ -39,11 +52,23 @@ export default function QueueServing({ params }: QueueDetailsParams) {
 
     const [callNextInQueue, { isLoading: loadingCallNextInQueue, error: errorCallNextInQueue }] = useCallNextInQueueMutation();
 
-    const { data: reservations, error, isLoading: loadingReservations } = useGetReservationsQuery({ id, page: 1, size: 10, scope: 'all' });
+    const {
+        data: reservations,
+        error,
+        isLoading: loadingReservations,
+        isFetching: fetchingReservations,
+    } = useGetReservationsQuery(
+        { id, page: 1, size: 10, scope: 'all' },
+        {
+            refetchOnMountOrArgChange: true,
+            pollingInterval: 10000,
+            refetchOnReconnect: true,
+        }
+    );
 
     const reservationError = error as ReservationError;
 
-    const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.CREATED);
+    const [queueStatus, setQueueStatus] = useState<QueueStatus>(queue?.status ?? QueueStatus.CREATED);
 
     if (loadingReservations) {
         return (
@@ -61,6 +86,17 @@ export default function QueueServing({ params }: QueueDetailsParams) {
         );
     }
 
+    if (queue?.status === QueueStatus.DELETED) {
+        return (
+            <div className="flex items-center rounded bg-danger-light p-3.5 text-danger dark:bg-danger-dark-light">
+                <span className="ltr:pr-2 rtl:pl-2">
+                    <strong className="ltr:mr-1 rtl:ml-1">{t('Error!')}</strong>
+                    {t('This queue has been deleted')}.
+                </span>
+            </div>
+        );
+    }
+
     if (reservations?.content.length === 0) {
         return (
             <div className="flex items-center justify-center p-5">
@@ -71,11 +107,14 @@ export default function QueueServing({ params }: QueueDetailsParams) {
 
     const { content: reservationsList } = reservations;
 
-    const currentServing = reservationsList.find((reservation) => reservation.status === 'SERVING');
+    const currentServingList = reservationsList.filter((reservation) => reservation.status === 'SERVING');
     const waitList = reservationsList.filter((reservation) => reservation.status === 'WAITING');
     const servedList = reservationsList.filter((reservation) => reservation.status === 'SERVED');
 
     const handleCallNext = () => {
+        if (queue?.status !== QueueStatus.ACTIVE) {
+            return;
+        }
         callNextInQueue({ id })
             .unwrap()
             .catch((error) => console.error(error));
@@ -152,6 +191,12 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                 </Tab.List>
             </div>
 
+            <div className={`mx-6 flex items-center rounded ${queueStatusClasses[queue?.status ?? QueueStatus.CREATED]} p-3.5 dark:bg-primary-dark-light`}>
+                <span className="ltr:pl-2 rtl:pr-2">
+                    {t('Queue status')}
+                    <strong className="ltr:ml-1 rtl:mr-1">{queue?.status}</strong>
+                </span>
+            </div>
             <div className="my-6 grid grid-cols-2 justify-center gap-4 px-6 md:grid-cols-4">
                 <button
                     className="btn btn-success transform text-sm transition duration-300 hover:scale-105 md:text-base"
@@ -174,33 +219,49 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                 >
                     {t('Close Queue')}
                 </button>
-                <button className="btn btn-danger transform text-sm transition duration-300 hover:scale-105 md:text-base" onClick={handleDeleteQueue} disabled={loadingQueueManagement}>
+                <button
+                    className="btn btn-danger transform text-sm transition duration-300 hover:scale-105 md:text-base"
+                    onClick={() => setOpenConfirmationModal(true)}
+                    disabled={loadingQueueManagement}
+                >
                     <FaTrash className="mr-1 md:mr-2" /> {t('Delete Queue')}
                 </button>
             </div>
+
+            <ComfirmationModal isOpen={openConfirmationModal} onClose={() => setOpenConfirmationModal(false)} onConfirm={handleDeleteQueue} />
 
             <Tab.Panels className="p-6 pt-0">
                 <Tab.Panel>
                     <div className="flex h-full w-full flex-col justify-center gap-5 py-5 md:flex-row">
                         <div className="relative w-full max-w-sm rounded-xl border border-[#e0e6ed] bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none">
                             <div className="relative z-10 flex flex-col justify-center gap-3 px-6 py-7">
-                                {/* <div className="mb-4 flex items-center justify-between">
-                                    <h2 className="text-xl font-semibold">{t('Serving')} (1)</h2>
-                                    <button className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-500 hover:bg-gray-200">Slide for Next Customer</button>
-                                </div> */}
-                                {currentServing ? (
-                                    <div className="rounded-lg bg-gray-50 p-4 dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
-                                        <p className="text-lg font-medium">{currentServing?.email}</p>
-                                        <p className="mt-2 text-sm text-gray-600">
-                                            {t('Serving from')}: {getRelativeTimeString(new Date(Date.parse(currentServing?.calledAt ?? '')), 'en')}
-                                        </p>
-                                    </div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h2 className="text-xl font-semibold">
+                                        {t('Serving')} ({currentServingList?.length})
+                                    </h2>
+                                    {fetchingReservations && (
+                                        <div className="flex items-center justify-center p-2">
+                                            <Loader size="small" />
+                                        </div>
+                                    )}
+                                </div>
+                                {currentServingList.length > 0 ? (
+                                    <>
+                                        {currentServingList.map((currentServing) => (
+                                            <div className="rounded-lg bg-gray-50 p-4 dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
+                                                <p className="text-lg font-medium">{currentServing?.email}</p>
+                                                <p className="mt-2 text-sm text-gray-600">
+                                                    {t('Serving from')}: {getRelativeTimeString(new Date(Date.parse(currentServing?.calledAt ?? '')), i18n.language)}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </>
                                 ) : (
                                     <div className="rounded-lg bg-gray-50 p-4 dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
                                         <p className="text-center font-medium">{t('No one is being served')}</p>
                                     </div>
                                 )}
-                                <button className="btn btn-primary max-w-md" onClick={handleCallNext}>
+                                <button className="btn btn-primary max-w-md" onClick={handleCallNext} disabled={queue?.status !== QueueStatus.ACTIVE}>
                                     {loadingCallNextInQueue ? <ButtonLoader /> : <FaPlus className="mr-3 size-4" />}
                                     {t('Call Next')}
                                 </button>
@@ -266,3 +327,52 @@ export default function QueueServing({ params }: QueueDetailsParams) {
         </Tab.Group>
     );
 }
+
+interface ConfirmationModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+}
+
+const ComfirmationModal = ({ isOpen, onClose, onConfirm }: ConfirmationModalProps) => {
+    const { t } = getTranslation();
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" open={isOpen} onClose={onClose}>
+                <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                    <div className="fixed inset-0" />
+                </Transition.Child>
+                <div className="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60">
+                    <div className="flex min-h-screen items-center justify-center px-4">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                        >
+                            <Dialog.Panel as="div" className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                                <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                                    <h5 className="text-lg font-bold">{t('Delete Queue ?')}</h5>
+                                </div>
+                                <div className="p-5">
+                                    <p> {t('Are you sure you want to proceed? This action cannot be undone')}.</p>
+                                    <div className="mt-8 flex items-center justify-end">
+                                        <button type="button" className="btn btn-outline-danger" onClick={onClose}>
+                                            {t('Cancel')}
+                                        </button>
+                                        <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={onConfirm}>
+                                            {t('Confirm')}
+                                        </button>
+                                    </div>
+                                </div>
+                            </Dialog.Panel>
+                        </Transition.Child>
+                    </div>
+                </div>
+            </Dialog>
+        </Transition>
+    );
+};

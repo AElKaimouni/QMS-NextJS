@@ -6,6 +6,15 @@ export enum QueueStatus {
     DELETED = 'DELETED',
 }
 
+export enum FieldType {
+    TEXT = 'TEXT',
+    BOOLEAN = 'BOOLEAN',
+    NUMBER = 'NUMBER',
+    EMAIL = 'EMAIL',
+    PHONE = 'PHONE',
+    DATE = 'DATE',
+}
+
 export interface Queue {
     id: string;
     title: string;
@@ -34,7 +43,7 @@ export interface QueueCreation {
         };
         fields?: {
             name: string;
-            type: string;
+            type: FieldType;
             required: boolean;
         }[];
     };
