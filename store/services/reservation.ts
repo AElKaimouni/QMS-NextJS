@@ -34,6 +34,23 @@ interface PaginatedResponse<T> {
     empty: boolean;
 }
 
+interface CreateReservationBody {
+    queueId: string;
+    email: string;
+    info?: Record<string, string>;
+}
+
+type ConsultReservationParams = {
+    id: string;
+    reservation_token: string;
+};
+
+interface ConsultReservation {
+    queueTitle: string;
+    position: number;
+    counter: number;
+    estimatedWaitTime: number;
+}
 
 const reservationSlice = api.injectEndpoints({
     endpoints: (build) => ({
@@ -41,11 +58,28 @@ const reservationSlice = api.injectEndpoints({
             query: ({ id, page, size, scope }) => ({ url: `queue/${id}/reservations`, params: { page, size, scope } }),
             providesTags: ['reservation'],
         }),
-        createReservation: build.mutation<Reservation, any>({
+        createReservation: build.mutation<Reservation, CreateReservationBody>({
             query: (body) => ({ url: '/reservations', method: 'POST', body }),
             invalidatesTags: ['reservation'],
+        }),
+        consultReservation: build.query<ConsultReservation, ConsultReservationParams>({
+            query: ({ id, reservation_token }) => ({ url: `/reservations/${id}/consult?token=${encodeURIComponent(reservation_token)}` }),
+        }),
+        downloadPDFReservation: build.query<Blob, ConsultReservationParams>({
+            query: ({ id, reservation_token }) => ({
+                url: `/reservations/generate-pdf/${id}?token=${encodeURIComponent(reservation_token)}`,
+                responseHandler: async (response) => {
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/pdf')) {
+                        throw new Error('Invalid PDF response');
+                    }
+
+                    return await response.blob();
+                },
+                cache: 'no-store',
+            }),
         }),
     }),
 });
 
-export const { useGetReservationsQuery, useCreateReservationMutation } = reservationSlice;
+export const { useGetReservationsQuery, useCreateReservationMutation, useConsultReservationQuery, useLazyDownloadPDFReservationQuery } = reservationSlice;

@@ -1,12 +1,11 @@
 'use client';
 
-import { MdOutlineTimer } from 'react-icons/md';
-import { Queue, QueueStatus } from '@/types/queue';
-import { QueueCardDropdown } from './QueueCardDropdown';
-import Link from 'next/link';
 import { useDeleteQueueMutation } from '@/store/services/queue';
+import { Queue, QueueStatus } from '@/types/queue';
+import Link from 'next/link';
 import { MouseEvent } from 'react';
-import { QueryStatus } from '@reduxjs/toolkit/query';
+import { MdOutlineTimer } from 'react-icons/md';
+import { QueueCardDropdown } from './QueueCardDropdown';
 
 interface QueueCardProps {
     queue: Queue;
