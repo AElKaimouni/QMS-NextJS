@@ -1,23 +1,34 @@
 'use client';
 
-import { useGetQueueQuery } from '@/store/services/queue';
+import { useConsultQueueQuery } from '@/store/services/queue';
 import { getTranslation } from '@/i18n';
 import Loader from '@/components/loader';
 import Link from 'next/link';
-import { HiOutlineInformationCircle } from "react-icons/hi";
-
+import { HiOutlineInformationCircle } from 'react-icons/hi';
 
 type ReservationInfoProps = {
-    params: { queue_id: string };
+    params: { qid: string };
 };
 
 const { t } = getTranslation();
 
 export default function ReservationInfo({ params }: ReservationInfoProps) {
-    const { queue_id } = params;
+    const { qid } = params;
 
-    const { data: queue, error: errorQueue, isLoading: loadingQueue } = useGetQueueQuery({ id: queue_id });
-    
+    const {
+        data: queue,
+        error: errorQueue,
+        isLoading: loadingQueue,
+        isFetching: fetchingQueue,
+    } = useConsultQueueQuery(
+        { id: qid },
+        {
+            refetchOnMountOrArgChange: true,
+            refetchOnFocus: true,
+            pollingInterval: 10000,
+        }
+    );
+
     if (loadingQueue) {
         return (
             <div className="flex items-center justify-center p-5">
@@ -32,6 +43,7 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
                 <div className="mb-6 flex items-center justify-center gap-2 text-gray-600">
                     <HiOutlineInformationCircle size={24} />
                     <span>Info</span>
+                    {fetchingQueue && <Loader size="small" />}
                 </div>
 
                 {/* Line Information */}
@@ -43,7 +55,7 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
 
                     <div className="text-center">
                         <div className="mb-1 text-gray-600">{t('Number of users in line ahead of you')}:</div>
-                        <div className="text-xl font-semibold">{queue?.length}</div>
+                        <div className="text-xl font-semibold">{(queue?.length ?? 0) - (queue?.counter ?? 0)}</div>
                     </div>
 
                     <div className="text-center">
@@ -53,12 +65,12 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
 
                     <div className="text-center">
                         <div className="mb-1 text-gray-600">{t('Your estimated wait time')}:</div>
-                        <div className="text-xl font-semibold">{queue?.createdAt}</div>
+                        <div className="text-xl font-semibold">{queue?.averageServeTime}</div>
                     </div>
                 </div>
 
-                <Link href={`/${queue_id}/reservations`}>
-                    <button className="btn btn-primary w-full">Go To Line</button>
+                <Link href={`/${qid}/reservations`}>
+                    <button className="btn btn-primary w-full">{t('Go To Line')}</button>
                 </Link>
             </div>
         </div>

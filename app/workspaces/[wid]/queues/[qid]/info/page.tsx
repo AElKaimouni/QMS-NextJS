@@ -1,17 +1,18 @@
 'use client';
 
-import React from 'react';
-import QRCode from 'react-qr-code';
-import { TbCopy } from 'react-icons/tb';
-import { useGetQueueQuery } from '@/store/services/queue';
 import Loader from '@/components/loader';
-import { QueueStatus } from '@/types/queue';
 import { getTranslation } from '@/i18n';
+import { useGetQueueQuery } from '@/store/services/queue';
+import { QueueStatus } from '@/types/queue';
+import { useRouter } from 'next/navigation';
 import { IoIosAlert } from 'react-icons/io';
+import { TbCopy } from 'react-icons/tb';
+import QRCode from 'react-qr-code';
 
 interface QueueDetailsParams {
     params: {
-        id: string;
+        qid: string;
+        wid: string;
     };
 }
 
@@ -23,13 +24,13 @@ interface QueueError {
 }
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const { t, i18n } = getTranslation();
-const qrCodeValue = 'http://www.admin-dashboard.com';
+const { t } = getTranslation();
 
 export default function QueueDetails({ params }: QueueDetailsParams) {
-    const { id } = params;
+    const { qid, wid } = params;
+    const qrCodeValue = `http://${location.host}/${qid}`;
 
-    const { data: queue, error, isLoading } = useGetQueueQuery({ id });
+    const { data: queue, error, isLoading } = useGetQueueQuery({ id: qid });
 
     const queueError = error as QueueError;
 
@@ -53,8 +54,17 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
         navigator.clipboard.writeText(qrCodeValue);
     };
 
+    const router = useRouter();
+    const handleEdit = () => {
+        router.push(`/workspaces/${wid}/queues/new?id=${qid}&edit=true`);
+    };
+
+    const handleManage = () => {
+        router.push(`/workspaces/${wid}/queues/${qid}/manage`);
+    };
+
     return (
-        <div className="flex min-h-screen w-full flex-col items-center justify-center bg-gray-50">
+        <div className="flex min-h-[calc(100dvh-72px)] w-full flex-col items-center justify-center bg-gray-50">
             {queue?.status === QueueStatus.DELETED && (
                 <div className="flex items-center rounded bg-danger-light p-3.5 text-danger dark:bg-danger-dark-light">
                     <IoIosAlert className="mr-8 size-6" />
@@ -81,7 +91,7 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
                 </div>
 
                 <div className="mb-4">
-                    <h3 className="text-sm font-semibold text-gray-800">Time & Date</h3>
+                    <h3 className="text-sm font-semibold text-gray-800">{t('Time & Date')}</h3>
                     <div className="mt-2 flex space-x-2">
                         <input type="text" value={queue.config?.time.startTime ?? ''} readOnly className="w-full rounded-lg border border-gray-300 p-2" />
                         <input type="text" value={queue.config?.time.endTime ?? ''} readOnly className="w-full rounded-lg border border-gray-300 p-2" />
@@ -92,15 +102,26 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
                 </div>
 
                 <div className="mb-4">
-                    <h3 className="text-sm font-semibold text-gray-800">Description</h3>
+                    <h3 className="text-sm font-semibold text-gray-800">{t('Description')}</h3>
                     <div className="mt-2 rounded-lg bg-gray-100 p-4">
                         <p className="text-sm text-gray-600">{queue.description}</p>
                     </div>
                 </div>
 
-                <div className="text-center">
-                    <button className="font-semibold text-blue-600 underline" disabled={queue?.status === QueueStatus.DELETED}>
-                        EDIT QUEUE
+                <div className="flex justify-center space-x-2">
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleManage}
+                        disabled={queue?.status === QueueStatus.DELETED}
+                    >
+                        {t('Manage Queue')}
+                    </button>
+                    <button
+                        className="btn shadow-none"
+                        onClick={handleEdit}
+                        disabled={queue?.status === QueueStatus.DELETED}
+                    >
+                        {t('Edit Queue')}
                     </button>
                 </div>
             </div>

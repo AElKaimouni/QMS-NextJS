@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const body: QueueCreation = await request.json();
     const api = getApiWithAuth(request);
 
-    const path = request.nextUrl.pathname.replace('/api', '');
+    const path = request.nextUrl.href.split("/api")[1];
 
     try {
         const res = await api.post(path, body);

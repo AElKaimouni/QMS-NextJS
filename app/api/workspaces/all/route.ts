@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const api = getApiWithAuth(request);
   
   // Use request.nextUrl.pathname to extract the correct API path
-  const path = request.nextUrl.href.split("/api")[1]; 
+  const path = request.nextUrl.href.split("/api")[1];
 
   try {
     const res = await api.get(path);  // Axios already infers the response type

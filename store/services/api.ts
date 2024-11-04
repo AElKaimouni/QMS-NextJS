@@ -25,6 +25,6 @@ export const api = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithRedirect,
     refetchOnReconnect: true,
-    tagTypes: ['auth', 'queue', 'reservation'],
+    tagTypes: ['auth', 'queue', 'reservation', "workspace"],
     endpoints: () => ({}),
 });

@@ -14,7 +14,7 @@ interface QueueCardDropdownProps {
     dropdownOptions: DropdownOption[];
 }
 
-export const QueueCardDropdown = ({ dropdownOptions }: QueueCardDropdownProps) => {
+export const CardDropdown = ({ dropdownOptions }: QueueCardDropdownProps) => {
     const isRtl = useTypedSelector((state) => state.themeConfig.rtlClass) === 'rtl';
     return (
         <Dropdown

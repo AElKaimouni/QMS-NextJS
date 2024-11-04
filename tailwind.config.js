@@ -15,6 +15,7 @@ module.exports = {
             center: true,
         },
         extend: {
+            
             colors: {
                 primary: {
                     DEFAULT: '#4361ee',

@@ -13,15 +13,19 @@ type CallNextInQueueParams = {
     id: string;
 };
 
+type GetAllQueuesParams = {
+    wid: string;
+};
+
 const queueSlice = api.injectEndpoints({
     endpoints: (build) => ({
         getQueue: build.query<Queue, GetQueueParams>({
             query: ({ id }) => `/queue/${id}`,
             providesTags: ['queue'],
         }),
-        createQueue: build.mutation<any, QueueCreation>({
+        createQueue: build.mutation<Queue, QueueCreation>({
             query: (body) => ({
-                url: '/queue',
+                url: `/queue?wid=${body.wid}`,
                 method: 'POST',
                 body,
             }),
@@ -31,8 +35,8 @@ const queueSlice = api.injectEndpoints({
             query: ({ id }) => `/queue/${id}/consult`,
             providesTags: ['queue'],
         }),
-        getAllQueues: build.query<Queue[], void>({
-            query: () => '/queue/all',
+        getAllQueues: build.query<Queue[], GetAllQueuesParams>({
+            query: ({ wid }) => `/queue/${wid}/all`,
             providesTags: ['queue'],
         }),
         callNextInQueue: build.mutation<void, CallNextInQueueParams>({
@@ -68,4 +72,5 @@ export const {
     useCloseQueueMutation,
     useDeleteQueueMutation,
     usePauseQueueMutation,
+    useLazyGetQueueQuery
 } = queueSlice;

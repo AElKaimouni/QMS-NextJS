@@ -18,23 +18,32 @@ export enum FieldType {
 export interface Queue {
     id: string;
     title: string;
+    workspaceId: number;
+    userId: number;
     description: string;
     counter: number;
     length: number;
     status: QueueStatus;
     createdAt: string;
     updatedAt?: string | null;
-    config?: Record<string, any>;
+    config: Record<string, any> | null;
 }
 
-export interface QueueConsultation extends Queue {
+export interface QueueConsultation {
+    id: string;
+    title: string;
+    description: string;
+    counter: number;
+    length: number;
+    status: QueueStatus;
+    config: Record<string, any> | null;
     averageServeTime: number;
-    averageWaitTime: number;
 }
 
 export interface QueueCreation {
     title: string;
     description: string;
+    wid: string;
     config: {
         time?: {
             days: number[];

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import QueueClientFields from '@/components/createqueue/queue-client-fields';
 import QueueDescription from '@/components/createqueue/queue-description';
 import QueueOperatingTime from '@/components/createqueue/queue-operating-time';
-import QueueClientFields from '@/components/createqueue/queue-client-fields';
-import { useTypedSelector } from '@/store';
+import Loader from '@/components/loader';
 import { getTranslation } from '@/i18n';
+import { useAppDispatch, useTypedSelector } from '@/store';
+import { setQueue } from '@/store/createQueueSlice';
+import { useCreateQueueMutation, useLazyGetQueueQuery } from '@/store/services/queue';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
-import { useCreateQueueMutation } from '@/store/services/queue';
-import { useRouter } from 'next/navigation';
 
 const steps = [
     { shortLabel: 'Description', fullLabel: 'Queue Description', component: QueueDescription },
@@ -16,8 +18,44 @@ const steps = [
     { shortLabel: 'Fields', fullLabel: 'Client Fields', component: QueueClientFields },
 ];
 
-export default function CreateQueueForm() {
-    const { t } = getTranslation();
+const { t } = getTranslation();
+
+interface CreateQueueFormProps {
+    params: { wid: string };
+}
+
+export default function CreateQueueForm({ params }: CreateQueueFormProps) {
+    const { wid } = params;
+
+    const searchParams = useSearchParams();
+
+    const isEdit = searchParams.get('edit') === 'true';
+
+    const [getQueue, { isLoading: loadingQueueData }] = useLazyGetQueueQuery();
+
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        if (isEdit) {
+            setCurrentStep(0);
+            const editQueueId = searchParams.get('id');
+            if (editQueueId) {
+                getQueue({ id: editQueueId })
+                    .unwrap()
+                    .then((res) =>
+                        dispatch(
+                            setQueue({
+                                title: res.title,
+                                description: res.description,
+                                config: res.config,
+                            })
+                        )
+                    )
+                    .catch((e) => console.error(e));
+            }
+        }
+    }, [isEdit]);
+
     const router = useRouter();
 
     const [currentStep, setCurrentStep] = useState(0);
@@ -34,24 +72,31 @@ export default function CreateQueueForm() {
     };
 
     const handleSubmit = () => {
-        // console.log(formData)
         createQueue(formData)
             .unwrap()
-            .then(() => {
-                router.push('/');
-            });
-
+            .then((res) => {
+                router.push(`/workspaces/${wid}/queues/${res.id}/info`);
+            })
+            .catch((e) => console.error(e));
     };
 
     const CurrentStepComponent = steps[currentStep].component;
+
+    if (isEdit && loadingQueueData) {
+        return (
+            <div className="flex items-center justify-center p-5">
+                <Loader />
+            </div>
+        );
+    }
 
     if (errorCreatingMutation) {
         return <div>{errorCreatingMutation?.message}</div>;
     }
 
     return (
-        <div className="flex min-h-screen flex-col justify-center">
-            <div className="sticky left-0 right-0 top-[72px] w-full bg-gray-50 p-4 z-50">
+        <div className="flex min-h-[calc(100dvh - 72px)] flex-col justify-center">
+            <div className="sticky left-0 right-0 top-[72px] z-50 w-full bg-gray-50 p-4">
                 <ol className="flex w-full items-center justify-center text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
                     {steps.map((step, index) => (
                         <li
@@ -81,8 +126,8 @@ export default function CreateQueueForm() {
                     ))}
                 </ol>
             </div>
-            <div className="px-6 mt-4">
-                    <CurrentStepComponent />
+            <div className="mt-4 px-6">
+                <CurrentStepComponent />
             </div>
 
             <div className="sticky bottom-[76px] left-0 right-0 bg-gray-50 p-4 shadow-md">

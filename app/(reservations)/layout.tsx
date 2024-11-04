@@ -11,7 +11,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
                 <Overlay />
 
                 <MainContainer>
-                    <div className="main-content flex min-h-screen flex-col">
+                    <div className="main-content flex min-h-[100dvh] flex-col">
                         {/* BEGIN TOP NAVBAR */}
                         <NoneAuthHeader />
                         {/* END TOP NAVBAR */}

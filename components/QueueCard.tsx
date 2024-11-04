@@ -1,11 +1,12 @@
 'use client';
 
 import { useDeleteQueueMutation } from '@/store/services/queue';
-import { Queue, QueueStatus } from '@/types/queue';
+import { Queue } from '@/types/queue';
 import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { MdOutlineTimer } from 'react-icons/md';
-import { QueueCardDropdown } from './QueueCardDropdown';
+import { CardDropdown } from './QueueCardDropdown';
+import { usePathname } from 'next/navigation';
 
 interface QueueCardProps {
     queue: Queue;
@@ -22,10 +23,7 @@ const queueStatusClasses = {
 export const QueueCard = ({ queue }: QueueCardProps) => {
     const [deleteQueue] = useDeleteQueueMutation();
 
-    const handleDeleteQueue = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
+    const handleDeleteQueue = () => {
         deleteQueue({ id: queue.id })
             .unwrap()
             .catch((error) => {
@@ -38,7 +36,9 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
         e.stopPropagation();
     };
     
-    const href = queue.status === QueueStatus.DELETED ? `/queues/${queue.id}/qr` :  `/queues/${queue.id}`;
+    const pathname = usePathname();
+    const href = pathname + `/queues/${queue.id}/info`
+
 
     return (
         <Link
@@ -53,7 +53,7 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
                     </div>
                     <p className="mt-2 text-lg font-bold">{queue.title}</p>
                     <div className="dropdown" onClick={handleDropdownClick}>
-                        <QueueCardDropdown
+                        <CardDropdown
                             dropdownOptions={[
                                 {
                                     label: 'Edit',
@@ -75,7 +75,7 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
                 <div className="mt-5 flex items-center justify-between">
                     <h5 className="text-xl font-semibold text-[#3b3f5c] dark:text-white-light">{queue.length}</h5>
                     <div className="flex items-center gap-2">
-                        <span className={`badge ${queueStatusClasses[queue.status]}`}>{queue.status}</span>
+                        <span className={`badge ${queueStatusClasses[queue.status] ?? "bg-queueStatus-created"}`}>{queue.status ?? "CREATED"}</span>
                     </div>
                 </div>
             </div>

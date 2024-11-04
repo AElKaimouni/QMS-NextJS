@@ -4,6 +4,7 @@ import { QueueCreation } from '@/types/queue';
 const initialState: QueueCreation = {
     title: '',
     description: '',
+    wid: '',
     config: {},
 };
 
@@ -16,6 +17,9 @@ const createQueueSlice = createSlice({
         },
         updateDescription: (state, action) => {
             state.description = action.payload;
+        },
+        updateWid: (state, action) => {
+            state.wid = action.payload;
         },
         updateConfig: (state, action) => {
             state.config = action.payload;
@@ -66,9 +70,14 @@ const createQueueSlice = createSlice({
             }
             state.config.fields = state.config.fields.filter((field) => field.name !== action.payload);
         },
+        setQueue: (state, action) => {
+            state.title = action.payload.title;
+            state.description = action.payload.description;
+            state.config = action.payload.config;
+        },
     },
 });
 
-export const { updateTitle, updateDescription, updateDays, updateConfig, addField, removeField, updateEndTime, updateStartTime } = createQueueSlice.actions;
+export const { updateTitle, updateDescription, updateDays, updateConfig, addField, removeField, updateEndTime, updateStartTime, setQueue, updateWid } = createQueueSlice.actions;
 
 export default createQueueSlice.reducer;

@@ -16,7 +16,8 @@ import { Dialog, Transition } from '@headlessui/react';
 
 interface QueueDetailsParams {
     params: {
-        id: string;
+        qid: string;
+        wid: string;
     };
 }
 
@@ -39,11 +40,11 @@ const rtf = new Intl.RelativeTimeFormat('en', { style: 'short', numeric: 'auto' 
 const { t, i18n } = getTranslation();
 
 export default function QueueServing({ params }: QueueDetailsParams) {
-    const { id } = params;
+    const { qid, wid } = params;
 
     const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 
-    const { data: queue, isLoading: loadingQueue, error: errorQueue } = useGetQueueQuery({ id });
+    const { data: queue, isLoading: loadingQueue, error: errorQueue } = useGetQueueQuery({ id: qid });
 
     const [startQueue, { isLoading: loadingStartQueue, error: errorStartQueue }] = useStartQueueMutation();
     const [closeQueue, { isLoading: loadingCloseQueue, error: errorCloseQueue }] = useCloseQueueMutation();
@@ -58,7 +59,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
         isLoading: loadingReservations,
         isFetching: fetchingReservations,
     } = useGetReservationsQuery(
-        { id, page: 1, size: 10, scope: 'all' },
+        { id: qid, page: 1, size: 10, scope: 'all' },
         {
             refetchOnMountOrArgChange: true,
             pollingInterval: 10000,
@@ -97,14 +98,6 @@ export default function QueueServing({ params }: QueueDetailsParams) {
         );
     }
 
-    if (reservations?.content.length === 0) {
-        return (
-            <div className="flex items-center justify-center p-5">
-                <p>{t('No reservations yet')}</p>
-            </div>
-        );
-    }
-
     const { content: reservationsList } = reservations;
 
     const currentServingList = reservationsList.filter((reservation) => reservation.status === 'SERVING');
@@ -115,14 +108,14 @@ export default function QueueServing({ params }: QueueDetailsParams) {
         if (queue?.status !== QueueStatus.ACTIVE) {
             return;
         }
-        callNextInQueue({ id })
+        callNextInQueue({ id: qid })
             .unwrap()
             .catch((error) => console.error(error));
     };
 
     // Queue management functions
     const handleStartQueue = () => {
-        startQueue({ id })
+        startQueue({ id: qid })
             .unwrap()
             .then(() => {
                 setQueueStatus(QueueStatus.ACTIVE);
@@ -134,7 +127,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
     const loadingQueueManagement = loadingStartQueue || loadingPauseQueue || loadingCloseQueue || loadingDeleteQueue;
 
     const handlePauseQueue = () => {
-        pauseQueue({ id })
+        pauseQueue({ id: qid })
             .unwrap()
             .then(() => {
                 setQueueStatus(QueueStatus.PAUSED);
@@ -143,7 +136,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
     };
 
     const handleCloseQueue = () => {
-        closeQueue({ id })
+        closeQueue({ id: qid })
             .unwrap()
             .then(() => {
                 setQueueStatus(QueueStatus.CLOSED);
@@ -152,7 +145,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
     };
 
     const handleDeleteQueue = () => {
-        deleteQueue({ id })
+        deleteQueue({ id: qid })
             .unwrap()
             .then(() => {
                 setQueueStatus(QueueStatus.DELETED);

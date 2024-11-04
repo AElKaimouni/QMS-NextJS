@@ -5,11 +5,16 @@ import { QueueCard } from './QueueCard';
 import { FaPlus } from 'react-icons/fa';
 import Loader from './loader';
 import { getTranslation } from '@/i18n';
+import Link from 'next/link';
 
 const { t } = getTranslation();
 
-export default function HomePanel() {
-    const { data: queues = [], error, isLoading: isLoadingQueues, isFetching: isFetchingQueues } = useGetAllQueuesQuery();
+interface QueuesInWorkspaceProps {
+    wid: string;
+}
+
+export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
+    const { data: queues = [], error, isLoading: isLoadingQueues, isFetching: isFetchingQueues } = useGetAllQueuesQuery({ wid });
 
     const errorQueue = error as { message: string };
 
@@ -31,10 +36,15 @@ export default function HomePanel() {
 
     if (queues.length === 0) {
         return (
-            <div className="flex items-center justify-center p-5">
-                <p className="text-center text-gray-500">
-                    {t('No queues found. Please create a new queue by clicking the ')} <FaPlus size={18} className="mx-2 inline" /> {t(' button below')}.
-                </p>
+            <div className="flex items-center justify-center flex-col p-5">
+                <p className="text-center text-gray-500">{t('No queues found. Please create a new queue')}</p>
+                <div className="mt-4 flex items-center justify-center">
+
+                    <Link href={`/workspaces/${wid}/queues/new`} className="btn btn-primary">
+                    <FaPlus className="text-xl mr-2" />
+                        {t('Create Queue')}
+                    </Link>
+                </div>
             </div>
         );
     }

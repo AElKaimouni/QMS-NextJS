@@ -5,12 +5,12 @@ import React, { useMemo } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Loader from '@/components/loader';
-import { useGetQueueQuery } from '@/store/services/queue';
+import { useConsultQueueQuery } from '@/store/services/queue';
 import { useCreateReservationMutation } from '@/store/services/reservation';
 import { useRouter } from 'next/navigation';
 
 interface ReservationRegistrationProps {
-    params: { queue_id: string; reservation_id: string };
+    params: { qid: string; reservation_id: string };
 }
 
 interface Field {
@@ -51,10 +51,10 @@ const generateLabel = (name: string) => {
 const { t } = getTranslation();
 
 export default function ReservationRegistration({ params }: ReservationRegistrationProps) {
-    const { queue_id } = params;
+    const { qid } = params;
     const router = useRouter();
 
-    const { data: queue, error: errorQueue, isLoading: loadingQueue } = useGetQueueQuery({ id: queue_id });
+    const { data: queue, error: errorQueue, isLoading: loadingQueue } = useConsultQueueQuery({ id: qid });
     const [createReservation, { isLoading: loadingCreateReservation }] = useCreateReservationMutation();
 
     const { initialValues, validationSchema } = useMemo(() => {
@@ -83,11 +83,11 @@ export default function ReservationRegistration({ params }: ReservationRegistrat
         initialValues,
         validationSchema,
         onSubmit: (values) => {
-            createReservation({ queueId: queue_id, email: values.email, info: values })
+            createReservation({ queueId: qid, email: values.email, info: values })
                 .unwrap()
                 .then((res) => {
                     localStorage.setItem('reservation_token', res.token);
-                    router.push(`/${queue_id}/reservations/${res.id}`);
+                    router.push(`/${qid}/reservations/${res.id}?token=${encodeURIComponent(res.token)}`);
                 })
                 .catch((e) => {
                     // TODO: proper error handling

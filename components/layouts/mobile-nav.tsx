@@ -1,82 +1,89 @@
 'use client';
-import React from 'react';
-import { getTranslation } from '@/i18n';
-import { FaHome } from 'react-icons/fa';
-import { IoMdSettings } from 'react-icons/io';
-import { ImStatsDots } from 'react-icons/im';
-import { TiClipboard } from "react-icons/ti";
-import { usePathname } from 'next/navigation';
-import { MdWorkspaces } from "react-icons/md";
-import { FaPlus } from 'react-icons/fa';
-import { ImStatsBars } from 'react-icons/im';
-import Link from 'next/link';
 
+import { getTranslation } from '@/i18n';
+import { usePathname } from 'next/navigation';
+import React from 'react';
+import { FaHome, FaPlus } from 'react-icons/fa';
+import { FaCircleInfo } from 'react-icons/fa6';
+import { ImStatsDots } from 'react-icons/im';
+import { IoMdSettings } from 'react-icons/io';
+import { MdWorkspaces } from 'react-icons/md';
+import { TiClipboard } from 'react-icons/ti';
+
+import Link from 'next/link';
 
 const { t } = getTranslation();
 
 const MobileNav = () => {
     const pathname = usePathname();
 
+    const wid = pathname?.split('/workspaces/')[1]?.split('/')[0];
+
     const isQueue = pathname.includes('/queues');
 
-    const QueuemenuItems = [
+    const queueId = pathname?.split('/queues/')[1]?.split('/')[0];
+
+    const last_workspace_id = localStorage.getItem('last_workspace') ?? '';
+
+    console.log(pathname, wid, queueId, last_workspace_id);
+
+    const queueMenu = [
         {
             title: t('home'),
             Icon: FaHome,
-            link: '/',
+            link: `/workspaces/${last_workspace_id}`,
         },
         {
-            title: t('analytics'),
-            Icon: ImStatsBars,
-            link: '/analytics',
+            title: t('info'),
+            Icon: FaCircleInfo,
+            link: `/workspaces/${wid}/queues/${queueId}/info`,
         },
         {
             title: t('Manage Queue'),
             Icon: TiClipboard,
-            link: '/queue/manage',
+            link: `/workspaces/${wid}/queues/${queueId}/manage`,
         },
         {
             title: t('metrics'),
             Icon: ImStatsDots,
-            link: '/metrics',
+            link: `/workspaces/${wid}/queues/${queueId}/metrics`,
         },
         {
             title: t('settings'),
             Icon: IoMdSettings,
-            link: '/settings',
+            link: `/workspaces/${wid}/queues/${queueId}/settings`,
         },
     ];
 
-    const menuItems = [
+    const workspaceMenu = [
         {
             title: t('home'),
             Icon: FaHome,
-            link: '/',
+            link: `/workspaces/${last_workspace_id}`,
         },
         {
             title: t('workspaces'),
             Icon: MdWorkspaces,
             link: '/workspaces',
         },
-
         {
             title: t('new_queue'),
             Icon: FaPlus,
-            link: '/queues/new',
+            link: '/workspaces/new',
         },
         {
             title: t('metrics'),
             Icon: ImStatsDots,
-            link: '/metrics',
+            link: '/workspaces/metrics',
         },
         {
             title: t('settings'),
             Icon: IoMdSettings,
-            link: '/settings',
+            link: '/workspaces/settings',
         },
     ];
 
-    const menu = isQueue ? QueuemenuItems : menuItems;
+    const menu = isQueue ? queueMenu : workspaceMenu;
 
     return (
         <div style={{ backgroundColor: 'rgb(250 250 250 / 0.9)' }} className="sticky bottom-0 z-50 w-full md:hidden lg:hidden">
@@ -103,7 +110,7 @@ const MobileNav = () => {
                                     href={item.link}
                                     data-tooltip-target="tooltip-home"
                                     type="button"
-                                    className={`inline-flex flex-col items-center justify-center px-5 ${index === menuItems.length - 1 ? 'rounded-e-full' : ''} ${
+                                    className={`inline-flex flex-col items-center justify-center px-5 ${index === workspaceMenu.length - 1 ? 'rounded-e-full' : ''} ${
                                         index === 0 ? 'rounded-s-full' : ''
                                     } group hover:bg-gray-50 dark:hover:bg-gray-800`}
                                 >

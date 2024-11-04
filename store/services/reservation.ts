@@ -67,13 +67,8 @@ const reservationSlice = api.injectEndpoints({
         }),
         downloadPDFReservation: build.query<Blob, ConsultReservationParams>({
             query: ({ id, reservation_token }) => ({
-                url: `/reservations/generate-pdf/${id}?token=${encodeURIComponent(reservation_token)}`,
+                url: `/reservations/${id}/generate-pdf?token=${encodeURIComponent(reservation_token)}`,
                 responseHandler: async (response) => {
-                    const contentType = response.headers.get('content-type');
-                    if (!contentType || !contentType.includes('application/pdf')) {
-                        throw new Error('Invalid PDF response');
-                    }
-
                     return await response.blob();
                 },
                 cache: 'no-store',
