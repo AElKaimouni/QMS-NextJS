@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { MdOutlineTimer } from 'react-icons/md';
 import { CardDropdown } from './QueueCardDropdown';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter, useParams } from 'next/navigation';
 
 interface QueueCardProps {
     queue: Queue;
@@ -23,6 +23,10 @@ const queueStatusClasses = {
 export const QueueCard = ({ queue }: QueueCardProps) => {
     const [deleteQueue] = useDeleteQueueMutation();
 
+    const { wid } = useParams();
+
+    const router = useRouter();
+
     const handleDeleteQueue = () => {
         deleteQueue({ id: queue.id })
             .unwrap()
@@ -35,10 +39,9 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
         e.preventDefault();
         e.stopPropagation();
     };
-    
-    const pathname = usePathname();
-    const href = pathname + `/queues/${queue.id}/info`
 
+    const pathname = usePathname();
+    const href = pathname + `/queues/${queue.id}/info`;
 
     return (
         <Link
@@ -60,7 +63,7 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
                                     onClick: (e: MouseEvent) => {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        // router.push(`/queue/${queue.id}/edit`);
+                                        router.push(`/workspaces/${wid}/queue/${queue.id}/new`);
                                     },
                                 },
                                 {
@@ -75,7 +78,7 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
                 <div className="mt-5 flex items-center justify-between">
                     <h5 className="text-xl font-semibold text-[#3b3f5c] dark:text-white-light">{queue.length}</h5>
                     <div className="flex items-center gap-2">
-                        <span className={`badge ${queueStatusClasses[queue.status] ?? "bg-queueStatus-created"}`}>{queue.status ?? "CREATED"}</span>
+                        <span className={`badge ${queueStatusClasses[queue.status] ?? 'bg-queueStatus-created'}`}>{queue.status ?? 'CREATED'}</span>
                     </div>
                 </div>
             </div>

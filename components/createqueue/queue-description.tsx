@@ -60,7 +60,8 @@ const QueueDescription = () => {
             <input type="text" className="form-input" placeholder={t('Business name')} required value={title} onChange={handleTitleChange} />
 
             <SimpleMdeReact value={description} onChange={handleDescriptionChange} options={mdOptions} />
-
+            
+            {/* @ts-ignore */}
             <Select options={selectOptionsWorkspaces} value={workspaces.find((workspace) => String(workspace.id) === wid)} onChange={handleWidChange} isSearchable={false} />
         </div>
     );

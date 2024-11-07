@@ -1,32 +1,36 @@
 import { Workspace } from '@/types/workspace';
 import { api } from './api';
 
-type TempTypeWorkspace = {
-    id: number;
-    userId: number;
+type CreateWorkspace = {
     title: string;
-    businessName: string;
-    businessIndustry: string;
-    contactEmail: string;
-    contactPhone: string;
+    businessName?: string;
+    businessIndustry?: string;
+    contactEmail?: string;
+    contactPhone?: string;
 };
 
 type UpdateWorkspace = {
     id: number;
-    data: Workspace;
+    data: {
+        title?: string;
+        businessName?: string;
+        businessIndustry?: string;
+        contactEmail?: string;
+        contactPhone?: string;
+    };
 };
 
 const workspaceSlice = api.injectEndpoints({
     endpoints: (build) => ({
-        getWorkspace: build.query<TempTypeWorkspace, any>({
+        getWorkspace: build.query<Workspace, any>({
             query: ({ id }) => `/workspaces/${id}`,
             providesTags: ['workspace'],
         }),
-        getAllWorkspaces: build.query<TempTypeWorkspace[], any>({
+        getAllWorkspaces: build.query<Workspace[], any>({
             query: () => `/workspaces/all`,
             providesTags: ['workspace'],
         }),
-        createWorkspace: build.mutation<any, Workspace>({
+        createWorkspace: build.mutation<any, CreateWorkspace>({
             query: (data) => ({
                 url: `/workspaces`,
                 method: 'POST',
@@ -52,11 +56,4 @@ const workspaceSlice = api.injectEndpoints({
     }),
 });
 
-export const {
-    useGetWorkspaceQuery,
-    useLazyGetWorkspaceQuery,
-    useGetAllWorkspacesQuery,
-    useCreateWorkspaceMutation,
-    useUpdateWorkspaceMutation,
-    useDeleteWorkspaceMutation,
-} = workspaceSlice;
+export const { useGetWorkspaceQuery, useLazyGetWorkspaceQuery, useGetAllWorkspacesQuery, useCreateWorkspaceMutation, useUpdateWorkspaceMutation, useDeleteWorkspaceMutation } = workspaceSlice;

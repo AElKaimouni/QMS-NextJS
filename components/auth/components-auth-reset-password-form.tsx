@@ -1,4 +1,5 @@
 'use client';
+
 import IconMail from '@/components/icon/icon-mail';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -10,6 +11,7 @@ const ComponentsAuthResetPasswordForm = () => {
         e.preventDefault();
         router.push('/');
     };
+
     return (
         <form className="space-y-5" onSubmit={submitForm}>
             <div>

@@ -5,11 +5,20 @@ import { CardDropdown } from '@/components/QueueCardDropdown';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/loader';
 import { getTranslation } from '@/i18n';
+import { useEffect } from 'react';
+import { Workspace } from '@/types/workspace';
 
 const { t } = getTranslation();
 
 const Workspaces = () => {
-    const { data: workspaces = [], isLoading: loadingWorkspaces, error: errorWorkspaces } = useGetAllWorkspacesQuery(undefined);
+    const { data: workspaces, isLoading: loadingWorkspaces, error: errorWorkspaces } = useGetAllWorkspacesQuery(undefined);
+    const router = useRouter();
+
+    useEffect(() => {
+        if (workspaces && workspaces.length === 0) {
+            router.push('/workspaces/new');
+        }
+    }, [workspaces]);
 
     if (loadingWorkspaces)
         return (
@@ -20,7 +29,7 @@ const Workspaces = () => {
 
     return (
         <div className="min-h-[calc(100dvh - 72px)] flex flex-col items-center justify-center gap-4 p-4 sm:flex-row sm:flex-wrap">
-            {workspaces.map((workspace) => (
+            {workspaces && workspaces.map((workspace) => (
                 <WorkspaceCard key={workspace.id} workspace={workspace} />
             ))}
         </div>
@@ -29,15 +38,6 @@ const Workspaces = () => {
 
 export default Workspaces;
 
-type Workspace = {
-    id: number;
-    userId: number;
-    title: string;
-    businessName: string;
-    businessIndustry: string;
-    contactEmail: string;
-    contactPhone: string;
-};
 
 interface WorkspaceCardProps {
     workspace: Workspace;
@@ -54,7 +54,7 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ workspace }) => {
     const router = useRouter();
 
     const handleEditWorkspace = () => {
-        router.push(`/workspaces/${workspace.id}/edit`);
+        router.push(`/workspaces/new?edit=true&id=${workspace.id}`);
     };
 
     const handleDeleteWorkspace = () => {
@@ -68,7 +68,7 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ workspace }) => {
     const handleCardClick = () => {
         localStorage.setItem('last_workspace', JSON.stringify(workspace.id));
         router.push(`/workspaces/${workspace.id}`);
-    }
+    };
 
     return (
         <div className="flex w-full flex-col flex-wrap rounded-lg border bg-white p-4 shadow-md sm:max-w-xs">
@@ -113,7 +113,9 @@ const WorkspaceCard: React.FC<WorkspaceCardProps> = ({ workspace }) => {
             </div>
 
             {/* Footer with Button */}
-            <button className="mt-4 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-500" onClick={handleCardClick}>{t('See More')}</button>
+            <button className="mt-4 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-500" onClick={handleCardClick}>
+                {t('See More')}
+            </button>
         </div>
     );
 };

@@ -3,58 +3,59 @@ import { AxiosError } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const api = getApiWithAuth(request);
-  
-  // Use request.nextUrl.pathname to extract the correct API path
-  const path = request.nextUrl.href.split("/api")[1];
+    const api = getApiWithAuth(request);
+    const headers = Object.fromEntries(request.headers.entries());
+    const path = request.nextUrl.href.split('/api')[1];
 
-  try {
-    const res = await api.get(path);  // Axios already infers the response type
+    try {
+        const res = await api.get(path, { headers });
 
-    return NextResponse.json(res.data, { status: 200 });
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      return NextResponse.json({ message: e.message }, { status: e.response?.status || 500 });
+        return NextResponse.json(res.data, { status: 200 });
+    } catch (e) {
+        if (e instanceof AxiosError) {
+            return NextResponse.json({ message: e.message }, { status: e.response?.status || 500 });
+        }
+
+        return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
     }
-
-    return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
-  }
 }
 
 export async function PUT(request: NextRequest) {
-  const api = getApiWithAuth(request);
-  
-  // Use request.nextUrl.pathname to extract the correct API path
-  const path = request.nextUrl.href.split("/api")[1]; 
+    const body = await request.json();
+    const api = getApiWithAuth(request);
+    // Use request.nextUrl.pathname to extract the correct API path
+    const path = request.nextUrl.href.split('/api')[1];
+    const headers = Object.fromEntries(request.headers.entries());
 
-  try {
-    const res = await api.post(path);  // Axios already infers the response type
+    try {
+        const res = await api.put(path, body, { headers });
 
-    return NextResponse.json(res.data, { status: 200 });
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      return NextResponse.json({ message: e.message }, { status: e.response?.status || 500 });
+        return NextResponse.json(res.data, { status: 200 });
+    } catch (e) {
+        if (e instanceof AxiosError) {
+            return NextResponse.json({ message: e.message }, { status: e.response?.status || 500 });
+        }
+
+        return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
     }
-
-    return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
-  }
 }
 
 export async function DELETE(request: NextRequest) {
-  const api = getApiWithAuth(request);
-  
-  // Use request.nextUrl.pathname to extract the correct API path
-  const path = request.nextUrl.href.split("/api")[1]; 
+    const api = getApiWithAuth(request);
+    const headers = Object.fromEntries(request.headers.entries());
 
-  try {
-    const res = await api.post(path);  // Axios already infers the response type
+    // Use request.nextUrl.pathname to extract the correct API path
+    const path = request.nextUrl.href.split('/api')[1];
 
-    return NextResponse.json(res.data, { status: 200 });
-  } catch (e) {
-    if (e instanceof AxiosError) {
-      return NextResponse.json({ message: e.message }, { status: e.response?.status || 500 });
+    try {
+        const res = await api.delete(path, { headers }); // Axios already infers the response type
+
+        return NextResponse.json(res.data, { status: 200 });
+    } catch (e) {
+        if (e instanceof AxiosError) {
+            return NextResponse.json({ message: e.message }, { status: e.response?.status || 500 });
+        }
+
+        return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
     }
-
-    return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
-  }
 }

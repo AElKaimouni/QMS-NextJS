@@ -50,7 +50,7 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
                 responseType: 'blob',
                 headers: {
                     Accept: 'application/pdf',
-                }
+                },
             })
             .then((res) => {
                 const blob = new Blob([res.data], { type: res.headers['content-type'] });
@@ -86,7 +86,7 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
 
                     <div className="text-center">
                         <div className="mb-1 text-gray-600">{t('Number of users in line ahead of you')}:</div>
-                        <div className="text-xl font-semibold">{(reservation?.counter ?? 0) - (reservation?.position ?? 0)}</div>
+                        <div className="text-xl font-semibold">{(reservation?.position ?? 0) - (reservation?.counter ?? 0)}</div>
                     </div>
 
                     <div className="text-center">
