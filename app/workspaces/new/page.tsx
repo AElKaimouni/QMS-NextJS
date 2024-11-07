@@ -9,11 +9,11 @@ import { getTranslation } from '@/i18n';
 
 const { t } = getTranslation();
 
-interface NewWorkspaceProps {
+interface PageProps  {
     wid: string;
 }
 
-const NewWorkspace = ({wid}: NewWorkspaceProps) => {
+const NewWorkspace = ({wid}: PageProps ) => {
     const searchParams = useSearchParams();
     const edit = searchParams.get('edit');
     const id = searchParams.get('id');
