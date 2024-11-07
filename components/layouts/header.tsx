@@ -1,12 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { IRootState } from '@/store';
-import { toggleTheme, toggleSidebar, toggleRTL } from '@/store/themeConfigSlice';
+import { useTypedSelector, useAppDispatch } from '@/store';
+import { toggleTheme, toggleRTL } from '@/store/themeConfigSlice';
 import Dropdown from '@/components/dropdown';
-import IconMenu from '@/components/icon/icon-menu';
 import IconXCircle from '@/components/icon/icon-x-circle';
 import IconSun from '@/components/icon/icon-sun';
 import IconMoon from '@/components/icon/icon-moon';
@@ -19,16 +17,87 @@ import IconLockDots from '@/components/icon/icon-lock-dots';
 import IconLogout from '@/components/icon/icon-logout';
 import { usePathname, useRouter } from 'next/navigation';
 import { getTranslation } from '@/i18n';
-import { FaHome } from "react-icons/fa";
-import { ImStatsBars } from "react-icons/im";
-import { FaUsersBetweenLines } from "react-icons/fa6";
+import { ImStatsBars } from 'react-icons/im';
+import { FaUsersBetweenLines } from 'react-icons/fa6';
+import { FaHome, FaPlus } from 'react-icons/fa';
+import { FaCircleInfo } from 'react-icons/fa6';
+import { ImStatsDots } from 'react-icons/im';
+import { IoMdSettings } from 'react-icons/io';
+import { MdWorkspaces } from 'react-icons/md';
+import { TiClipboard } from 'react-icons/ti';
 
+const { t, i18n } = getTranslation();
 
 const Header = () => {
     const pathname = usePathname();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const router = useRouter();
-    const { t, i18n } = getTranslation();
+
+    const wid = pathname?.split('/workspaces/')[1]?.split('/')[0];
+    const queueId = pathname?.split('/queues/')[1]?.split('/')[0];
+
+    const isQueue = pathname?.includes('/queues');
+    const last_workspace_id = localStorage.getItem('last_workspace') ?? '';
+
+    const menu = useMemo(() => {
+        const queueMenu = [
+            {
+                title: t('Home'),
+                Icon: FaHome,
+                link: `/workspaces/${last_workspace_id}`,
+            },
+            {
+                title: t('Info'),
+                Icon: FaCircleInfo,
+                link: `/workspaces/${wid}/queues/${queueId}/info`,
+            },
+            {
+                title: t('Manage'),
+                Icon: TiClipboard,
+                link: `/workspaces/${wid}/queues/${queueId}/manage`,
+            },
+            {
+                title: t('Metrics'),
+                Icon: ImStatsDots,
+                link: `/workspaces/${wid}/queues/${queueId}/metrics`,
+            },
+            {
+                title: t('Settings'),
+                Icon: IoMdSettings,
+                link: `/workspaces/${wid}/queues/${queueId}/settings`,
+            },
+        ];
+
+        const workspaceMenu = [
+            {
+                title: t('Home'),
+                Icon: FaHome,
+                link: `/workspaces/${last_workspace_id}`,
+            },
+            {
+                title: t('Workspaces'),
+                Icon: MdWorkspaces,
+                link: '/workspaces',
+            },
+            {
+                title: t('New'),
+                Icon: FaPlus,
+                link: '/workspaces/new',
+            },
+            {
+                title: t('Metrics'),
+                Icon: ImStatsDots,
+                link: `/workspaces/metrics`,
+            },
+            {
+                title: t('Settings'),
+                Icon: IoMdSettings,
+                link: `/workspaces/settings`,
+            },
+        ];
+
+        return isQueue ? queueMenu : workspaceMenu;
+    }, [pathname, last_workspace_id, wid, queueId, isQueue]);
 
     useEffect(() => {
         const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
@@ -58,9 +127,9 @@ const Header = () => {
         }
     }, [pathname]);
 
-    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl';
+    const isRtl = useTypedSelector((state) => state.themeConfig.rtlClass) === 'rtl';
 
-    const themeConfig = useSelector((state: IRootState) => state.themeConfig);
+    const themeConfig = useTypedSelector((state) => state.themeConfig);
     const setLocale = (flag: string) => {
         if (flag.toLowerCase() === 'ae') {
             dispatch(toggleRTL('rtl'));
@@ -68,44 +137,6 @@ const Header = () => {
             dispatch(toggleRTL('ltr'));
         }
         router.refresh();
-    };
-
-    function createMarkup(messages: any) {
-        return { __html: messages };
-    }
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            image: '<span class="grid place-content-center w-9 h-9 rounded-full bg-success-light dark:bg-success text-success dark:text-success-light"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>',
-            title: 'Congratulations!',
-            message: 'Your OS has been updated.',
-            time: '1hr',
-        },
-        {
-            id: 2,
-            image: '<span class="grid place-content-center w-9 h-9 rounded-full bg-info-light dark:bg-info text-info dark:text-info-light"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></span>',
-            title: 'Did you know?',
-            message: 'You can switch between artboards.',
-            time: '2hr',
-        },
-        {
-            id: 3,
-            image: '<span class="grid place-content-center w-9 h-9 rounded-full bg-danger-light dark:bg-danger text-danger dark:text-danger-light"> <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>',
-            title: 'Something went wrong!',
-            message: 'Send Reposrt',
-            time: '2days',
-        },
-        {
-            id: 4,
-            image: '<span class="grid place-content-center w-9 h-9 rounded-full bg-warning-light dark:bg-warning text-warning dark:text-warning-light"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">    <circle cx="12" cy="12" r="10"></circle>    <line x1="12" y1="8" x2="12" y2="12"></line>    <line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>',
-            title: 'Warning',
-            message: 'Your password strength is low.',
-            time: '5days',
-        },
-    ]);
-
-    const removeMessage = (value: number) => {
-        setMessages(messages.filter((user) => user.id !== value));
     };
 
     const [notifications, setNotifications] = useState([
@@ -133,56 +164,34 @@ const Header = () => {
         setNotifications(notifications.filter((user) => user.id !== value));
     };
 
-    const [search, setSearch] = useState(false);
-
     return (
         <header className={`z-40 ${themeConfig.semidark && themeConfig.menu === 'horizontal' ? 'dark' : ''}`}>
             <div className="shadow-sm">
-                <div className="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-black">
-                    <div className="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
+                <div className="relative flex w-full items-center justify-between bg-white px-5 py-2.5 dark:bg-black">
+                    <div className="horizontal-logo flex items-center justify-between lg:hidden ltr:mr-2 rtl:ml-2">
                         <Link href="/" className="main-logo flex shrink-0 items-center">
                             <img className="inline w-8 ltr:-ml-1 rtl:-mr-1" src="/assets/images/logo.svg" alt="logo" />
-                            <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">VRISTO</span>
+                            <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 dark:text-white-light md:inline ltr:ml-1.5 rtl:mr-1.5">VRISTO</span>
                         </Link>
-                        {/* <button
-                            type="button"
-                            className="collapse-icon flex flex-none rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary ltr:ml-2 rtl:mr-2 dark:bg-dark/40 dark:text-[#d0d2d6] dark:hover:bg-dark/60 dark:hover:text-primary lg:hidden"
-                            onClick={() => dispatch(toggleSidebar())}
-                        >
-                            <IconMenu className="h-5 w-5" />
-                        </button> */}
                     </div>
 
-
-                    <div className="flex items-center space-x-1.5 ltr:ml-auto rtl:mr-auto rtl:space-x-reverse dark:text-[#d0d2d6] sm:flex-1 ltr:sm:ml-0 sm:rtl:mr-0 lg:space-x-2">
+                    <div className="flex items-center space-x-1.5 dark:text-[#d0d2d6] lg:space-x-2 ltr:ml-auto ltr:sm:ml-0 rtl:mr-auto rtl:space-x-reverse sm:rtl:mr-0">
                         <div className="sm:ltr:mr-auto sm:rtl:ml-auto">
-                            <ul style={{ boxShadow: "none" }} className="horizontal-menu md:!flex ml-20 font-semibold text-black rtl:space-x-reverse lg:space-x-1.5 xl:space-x-8">
-                                <li className="menu nav-item relative">
-                                    <Link href={"/"} type="button" className="nav-link active">
-                                        <div className="flex items-center">
-                                            <FaHome className="shrink-0 dark:!text-white-dark" />
-                                            <span className="px-1 dark:!text-white-dark">{t('home')}</span>
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li className="menu nav-item relative">
-                                    <Link href={"/queues"} type="button" className="nav-link">
-                                        <div className="flex items-center">
-                                            <FaUsersBetweenLines className="shrink-0 dark:!text-white-dark" />
-                                            <span className="px-1 dark:!text-white-dark">{t('queues')}</span>
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li className="menu nav-item relative">
-                                    <Link href={"/analytics"} type="button" className="nav-link">
-                                        <div className="flex items-center">
-                                            <ImStatsBars className="shrink-0 dark:!text-white-dark" />
-                                            <span className="px-1 dark:!text-white-dark">{t('analytics')}</span>
-                                        </div>
-                                    </Link>
-                                </li>
+                            <ul className="horizontal-menu ml-20 font-semibold text-black !shadow-none md:!flex lg:space-x-1.5 xl:space-x-8 rtl:space-x-reverse">
+                                {menu.map((m) => (
+                                    <li className="menu relative">
+                                        <Link href={m.link} type="button" className="nav-link active">
+                                            <div className="flex items-center">
+                                                <m.Icon className="shrink-0 dark:!text-white-dark" />
+                                                <span className="px-1 dark:!text-white-dark">{t(m.title)}</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                ))}
                             </ul>
                         </div>
+                    </div>
+                    <div className='flex space-x-1'>
                         <div>
                             {themeConfig.theme === 'light' ? (
                                 <button
@@ -373,8 +382,6 @@ const Header = () => {
                         </div>
                     </div>
                 </div>
-
-                
             </div>
         </header>
     );

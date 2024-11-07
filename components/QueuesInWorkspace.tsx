@@ -36,12 +36,11 @@ export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
 
     if (queues.length === 0) {
         return (
-            <div className="flex items-center justify-center flex-col p-5">
+            <div className="flex flex-col items-center justify-center p-5">
                 <p className="text-center text-gray-500">{t('No queues found. Please create a new queue')}</p>
                 <div className="mt-4 flex items-center justify-center">
-
                     <Link href={`/workspaces/${wid}/queues/new`} className="btn btn-primary">
-                    <FaPlus className="text-xl mr-2" />
+                        <FaPlus className="mr-2 text-xl" />
                         {t('Create Queue')}
                     </Link>
                 </div>
@@ -56,6 +55,10 @@ export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
                 .map((queue) => (
                     <QueueCard key={queue.id} queue={queue} />
                 ))}
+            <Link href={`/workspaces/${wid}/queues/new`} className="btn btn-primary">
+                <FaPlus className="mr-2 text-xl" />
+                {t('Create Queue')}
+            </Link>
         </div>
     );
 }

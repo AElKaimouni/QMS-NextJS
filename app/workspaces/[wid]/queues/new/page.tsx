@@ -61,7 +61,9 @@ export default function CreateQueueForm({ params }: CreateQueueFormProps) {
     const [currentStep, setCurrentStep] = useState(0);
 
     const formData = useTypedSelector((state) => state.createQueue);
-    const [createQueue, { isLoading: loadingCreatingMutatiton, error: errorCreatingMutation }] = useCreateQueueMutation();
+    const [createQueue, { isLoading: loadingCreatingMutatiton, error }] = useCreateQueueMutation();
+
+    const errorCreatingMutation = error as { status: number; data: { message: string } };
 
     const handleNext = () => {
         setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -91,7 +93,7 @@ export default function CreateQueueForm({ params }: CreateQueueFormProps) {
     }
 
     if (errorCreatingMutation) {
-        return <div>{errorCreatingMutation?.message}</div>;
+        return <div>{errorCreatingMutation?.data?.message}</div>;
     }
 
     return (

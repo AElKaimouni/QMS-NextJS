@@ -4,12 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const api = getApiWithAuth(request);
-  
-  // Use request.nextUrl.pathname to extract the correct API path
+  const headers = Object.fromEntries(request.headers.entries());
+
   const path = request.nextUrl.href.split("/api")[1];
 
   try {
-    const res = await api.get(path);  // Axios already infers the response type
+    const res = await api.get(path, { headers });
 
     return NextResponse.json(res.data, { status: 200 });
   } catch (e) {
