@@ -1,17 +1,17 @@
 version: '3.8'
 
 services:
-  # qms-nextjs:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: qms-nextjs
-  #   environment:
-  #     - NODE_ENV=production
-  #   volumes:
-  #     - ./:/usr/src/app
-  #   ports:
-  #     - "3000:3000"
+  qms-nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qms-nextjs
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - "3000:3000"
 
   nginx:
     image: nginx:1.21.6-alpine
@@ -22,5 +22,5 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    # depends_on:
-    #   - qms-nextjs
+    depends_on:
+      - qms-nextjs
