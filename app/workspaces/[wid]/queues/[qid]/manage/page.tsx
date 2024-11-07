@@ -59,7 +59,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
         isLoading: loadingReservations,
         isFetching: fetchingReservations,
     } = useGetReservationsQuery(
-        { id: qid, page: 1, size: 10, scope: 'all' },
+        { id: qid, page: 0, size: 10, scope: 'all' },
         {
             refetchOnMountOrArgChange: true,
             pollingInterval: 10000,
