@@ -71,7 +71,7 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
     };
 
     return (
-        <div className="min-h-[calc(100dvh-72px)] p-4">
+        <div className="min-h-[calc(100dvh-6rem)] p-4">
             <div className="mx-auto max-w-sm rounded-lg border border-gray-200 bg-white p-6">
                 <div className="mb-6 flex items-center justify-center gap-2 text-gray-600">
                     <QRCode value={location.href} size={128} />

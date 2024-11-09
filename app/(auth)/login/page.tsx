@@ -23,7 +23,7 @@ const CoverLogin = () => {
                         <div className="absolute inset-y-0 w-8 from-primary/10 via-transparent to-transparent xl:w-16 ltr:-right-10 ltr:bg-gradient-to-r ltr:xl:-right-20 rtl:-left-10 rtl:bg-gradient-to-l rtl:xl:-left-20"></div>
                         <div className="ltr:xl:-skew-x-[14deg] rtl:xl:skew-x-[14deg]">
                             <Link href="/" className="ms-10 block w-48 lg:w-72">
-                                <img src="/assets/images/quickq.png" alt="Logo" className="w-full" />
+                                <img src="/assets/images/quickq_white.png" alt="Logo" className="w-full" />
                             </Link>
                             <div className="mt-24 hidden w-full max-w-[430px] lg:block">
                                 <img src="/assets/images/auth/login.svg" alt="Cover Image" className="w-full" />

@@ -28,7 +28,6 @@ export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
         setQueueIdToDelete(queueId);
         setDeleteConfirmation(true);
     };
-    console.log(queueIdToDelete);
 
     const handleDeleteQueue = () => {
         deleteQueue({ id: queueIdToDelete })
@@ -79,10 +78,6 @@ export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
                 .map((queue) => (
                     <QueueCard key={queue.id} queue={queue} triggerDeleteConfimation={triggerDeleteConfimation} />
                 ))}
-            <Link href={`/queues/new`} className="btn btn-primary">
-                <FaPlus className="mr-2 text-xl" />
-                {t('Create Queue')}
-            </Link>
             <DeleteComfirmationModal isOpen={deleteConfirmation} onClose={handleCancelDelete} onConfirm={handleDeleteQueue} />
         </div>
     );

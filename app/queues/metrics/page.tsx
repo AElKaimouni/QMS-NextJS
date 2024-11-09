@@ -72,7 +72,7 @@ export default function WorkspaceMetricsPage() {
                         horizontal: false,
                         columnWidth: '55%',
                         borderRadius: 5,
-                        borderRadiusApplication: "end",
+                        borderRadiusApplication: 'end',
                     },
                 },
                 grid: {
@@ -111,7 +111,7 @@ export default function WorkspaceMetricsPage() {
     }, [queues]);
 
     return (
-        <div className="flex min-h-[calc(100dvh-72px)] w-full justify-center p-4">
+        <div className="flex min-h-[calc(100dvh-6rem)] w-full justify-center p-4">
             <div className="flex w-full max-w-screen-xl flex-col space-y-4">
                 <h1 className="text-2xl font-bold">{t('Queues Metrics')}</h1>
 

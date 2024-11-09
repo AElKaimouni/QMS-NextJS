@@ -110,7 +110,7 @@ export default function ReservationRegistration({ params }: ReservationRegistrat
     }
 
     return (
-        <div className="flex min-h-[calc(100dvh-72px)] justify-center">
+        <div className="flex min-h-[calc(100dvh-6rem)] justify-center">
             <form className="max-w-wd mb-4 w-full p-4" onSubmit={formik.handleSubmit}>
                 <h1 className="mb-4 text-center text-2xl font-bold">{queue.title}</h1>
                 <h2 className="text-md mb-4">{t('Registration Form')}</h2>

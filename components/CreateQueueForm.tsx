@@ -104,8 +104,8 @@ export default function CreateQueueForm() {
     }
 
     return (
-        <div className="min-h-[calc(100dvh - 72px)] flex items-center justify-center">
-            <div className="flex w-full max-w-screen-lg flex-col">
+        <div className="h-full flex items-center justify-center">
+            <div className="flex w-full max-w-screen-md flex-col">
                 <div className="sticky left-0 right-0 top-[72px] z-50 w-full flex-[0.5] bg-gray-50 p-4">
                     <ol className="flex w-full items-center justify-center text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
                         {steps.map((step, index) => (
@@ -136,7 +136,7 @@ export default function CreateQueueForm() {
                         ))}
                     </ol>
                 </div>
-                <div className="mt-4 flex-1 px-6">
+                <div className="my-6 px-6">
                     <CurrentStepComponent />
                 </div>
 

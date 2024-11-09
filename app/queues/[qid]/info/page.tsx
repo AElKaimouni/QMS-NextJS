@@ -67,7 +67,7 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
     };
 
     return (
-        <div className="flex min-h-[calc(100dvh-72px)] w-full flex-col items-center justify-center bg-gray-50">
+        <div className="flex min-h-[calc(100dvh-6rem)] w-full flex-col items-center justify-center bg-gray-50">
             {queue?.status === QueueStatus.DELETED && (
                 <div className="flex items-center rounded bg-danger-light p-3.5 text-danger dark:bg-danger-dark-light">
                     <IoIosAlert className="mr-8 size-6" />

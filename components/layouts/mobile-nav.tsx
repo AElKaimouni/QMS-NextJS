@@ -107,7 +107,7 @@ const MobileNav = () => {
         // },
     ];
     return (
-        <div className="sticky bottom-0 z-50 w-full bg-gray-50 dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none md:hidden lg:hidden">
+        <div className="sticky bottom-0 z-50 w-full bg-gray-50 dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none md:hidden">
             <div style={{ width: 'calc(100% - 1.5rem)' }} className="mobile-nav mb-3 ml-3 h-16 max-w-lg rounded-full border border-gray-200 bg-white dark:border-gray-800 dark:bg-black">
                 <div className="mx-auto grid h-full max-w-lg grid-cols-4">
                     {menu.map((item, index) => {

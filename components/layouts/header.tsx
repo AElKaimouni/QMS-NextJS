@@ -101,7 +101,7 @@ const Header = () => {
         },
 
         {
-            title: t('New'),
+            title: t('New queue'),
             Icon: FaPlus,
             link: '/queues/new',
         },
@@ -168,7 +168,7 @@ const Header = () => {
     };
 
     return (
-        <header className={`z-40 ${themeConfig.semidark && themeConfig.menu === 'horizontal' ? 'dark' : ''}`}>
+        <header className={`z-40 h-24 ${themeConfig.semidark && themeConfig.menu === 'horizontal' ? 'dark' : ''}`}>
             <div className="shadow-sm">
                 <div className="relative flex w-full items-center justify-between bg-white px-5 py-2.5 dark:bg-black">
                     <div className="horizontal-logo flex items-center justify-between lg:hidden ltr:mr-2 rtl:ml-2">
@@ -232,7 +232,7 @@ const Header = () => {
                                 </button>
                             )}
                         </div>
-                        <div className="dropdown shrink-0">
+                        {/* <div className="dropdown shrink-0">
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
@@ -259,13 +259,13 @@ const Header = () => {
                                     })}
                                 </ul>
                             </Dropdown>
-                        </div>
+                        </div> */}
 
-                        <div className="dropdown flex shrink-0">
+                        <div className="dropdown !z-50 flex shrink-0">
                             <Dropdown
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
                                 btnClassName="relative group block"
-                                button={<IoPerson className="h-9 w-9 rounded-full bg-gray-100 object-cover text-blue-400 saturate-50 group-hover:saturate-100" />}
+                                button={<IoPerson className="!z-50 h-9 w-9 rounded-full bg-gray-100 object-cover text-blue-400 saturate-50 group-hover:saturate-100" />}
                             >
                                 <ul className="w-[230px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                                     <li>
