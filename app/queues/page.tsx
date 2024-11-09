@@ -2,8 +2,8 @@
 
 import QueuesInWorkspace from '@/components/QueuesInWorkspace';
 
-const Workspaces = ({ params }: { params: { wid: string } }) => {
-    const { wid } = params;
+const Workspaces = () => {
+    const wid = '1';
     return <QueuesInWorkspace wid={wid} />;
 };
 

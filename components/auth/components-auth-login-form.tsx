@@ -35,7 +35,7 @@ const ComponentsAuthLoginForm = () => {
         
         dispatch(setAuth(res.token));
 
-        router.push("/workspaces");
+        router.push("/");
     };
 
     return (

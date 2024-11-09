@@ -5,6 +5,8 @@ import { getTranslation } from '@/i18n';
 import Loader from '@/components/loader';
 import Link from 'next/link';
 import { HiOutlineInformationCircle } from 'react-icons/hi';
+import { useRouter } from 'next/navigation';
+import NotFound from '@/app/not-found';
 
 type ReservationInfoProps = {
     params: { qid: string };
@@ -15,14 +17,18 @@ const { t } = getTranslation();
 export default function ReservationInfo({ params }: ReservationInfoProps) {
     const { qid } = params;
 
+    const router = useRouter();
+
     const {
         data: queue,
         error: errorQueue,
+        isError: isErrorQueue,
         isLoading: loadingQueue,
         isFetching: fetchingQueue,
     } = useConsultQueueQuery(
         { id: qid },
         {
+            refetchOnReconnect: true,
             refetchOnMountOrArgChange: true,
             refetchOnFocus: true,
             pollingInterval: 10000,
@@ -35,6 +41,10 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
                 <Loader />
             </div>
         );
+    }
+
+    if (isErrorQueue) {
+        return <NotFound />
     }
 
     return (

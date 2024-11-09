@@ -1,4 +1,10 @@
 export interface User {
+    name: string;
+    email: string;
+    verified: boolean;
+}
+
+export interface ResetPassword {
     email: string;
 }
 

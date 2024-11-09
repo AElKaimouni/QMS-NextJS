@@ -14,6 +14,8 @@ const { t } = getTranslation();
 
 const QueueDescription = () => {
     const { data: workspaces = [], isLoading: loadingWorkspaces, error: errorWorkspaces } = useGetAllWorkspacesQuery(undefined);
+    
+    const formData = useTypedSelector((state) => state.createQueue);
 
     const { title, description, wid } = useTypedSelector((state) => state.createQueue);
     const dispatch = useAppDispatch();
@@ -62,7 +64,7 @@ const QueueDescription = () => {
             <SimpleMdeReact value={description} onChange={handleDescriptionChange} options={mdOptions} />
             
             {/* @ts-ignore */}
-            <Select options={selectOptionsWorkspaces} value={workspaces.find((workspace) => String(workspace.id) === wid)} onChange={handleWidChange} isSearchable={false} />
+            {/* <Select options={selectOptionsWorkspaces} value={workspaces.find((workspace) => String(workspace.id) === wid)} onChange={handleWidChange} isSearchable={false} /> */}
         </div>
     );
 };

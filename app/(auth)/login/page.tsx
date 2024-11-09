@@ -9,21 +9,21 @@ export const metadata: Metadata = {
 
 const CoverLogin = () => {
     return (
-        <div>
+        <div className="max-h-dvh">
             <div className="absolute inset-0">
                 <img src="/assets/images/auth/bg-gradient.png" alt="image" className="h-full w-full object-cover" />
             </div>
-            <div className="relative flex min-h-screen items-center justify-center bg-[url(/assets/images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16">
+            <div className="relative flex min-h-dvh items-center justify-center bg-[url(/assets/images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16">
                 <img src="/assets/images/auth/coming-soon-object1.png" alt="image" className="absolute left-0 top-1/2 h-full max-h-[893px] -translate-y-1/2" />
                 <img src="/assets/images/auth/coming-soon-object2.png" alt="image" className="absolute left-24 top-0 h-40 md:left-[30%]" />
                 <img src="/assets/images/auth/coming-soon-object3.png" alt="image" className="absolute right-0 top-0 h-[300px]" />
                 <img src="/assets/images/auth/polygon-object.svg" alt="image" className="absolute bottom-0 end-[28%]" />
                 <div className="relative flex w-full max-w-[1502px] flex-col justify-between overflow-hidden rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 lg:min-h-[758px] lg:flex-row lg:gap-10 xl:gap-0">
                     <div className="relative hidden w-full items-center justify-center bg-[linear-gradient(225deg,rgba(239,18,98,1)_0%,rgba(67,97,238,1)_100%)] p-5 lg:inline-flex lg:max-w-[835px] xl:-ms-28 ltr:xl:skew-x-[14deg] rtl:xl:skew-x-[-14deg]">
-                        <div className="absolute inset-y-0 w-8 from-primary/10 via-transparent to-transparent ltr:-right-10 ltr:bg-gradient-to-r rtl:-left-10 rtl:bg-gradient-to-l xl:w-16 ltr:xl:-right-20 rtl:xl:-left-20"></div>
+                        <div className="absolute inset-y-0 w-8 from-primary/10 via-transparent to-transparent xl:w-16 ltr:-right-10 ltr:bg-gradient-to-r ltr:xl:-right-20 rtl:-left-10 rtl:bg-gradient-to-l rtl:xl:-left-20"></div>
                         <div className="ltr:xl:-skew-x-[14deg] rtl:xl:skew-x-[14deg]">
                             <Link href="/" className="ms-10 block w-48 lg:w-72">
-                                <img src="/assets/images/auth/logo-white.svg" alt="Logo" className="w-full" />
+                                <img src="/assets/images/quickq.png" alt="Logo" className="w-full" />
                             </Link>
                             <div className="mt-24 hidden w-full max-w-[430px] lg:block">
                                 <img src="/assets/images/auth/login.svg" alt="Cover Image" className="w-full" />
@@ -43,6 +43,12 @@ const CoverLogin = () => {
                                 {/* <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p> */}
                             </div>
                             <ComponentsAuthLoginForm />
+
+                            <div className="mt-5 text-center dark:text-white">
+                                <Link href="/password-reset" className="text-center underline">
+                                    <p>Forgot you password?</p>
+                                    </Link>
+                            </div>
 
                             {/* <div className="relative my-7 text-center md:mb-9">
                                 <span className="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"></span>
@@ -88,7 +94,7 @@ const CoverLogin = () => {
                                     </li>
                                 </ul>
                             </div> */}
-                            <div className="text-center mt-10 dark:text-white">
+                            <div className="mt-5 text-center dark:text-white">
                                 Don&apos;t have an account ?&nbsp;
                                 <Link href="/register" className="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
                                     SIGN UP

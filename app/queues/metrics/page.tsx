@@ -2,23 +2,29 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useTypedSelector } from '@/store';
-import { useGetAllWorkspacesQuery } from '@/store/services/workspaces';
+import { useGetAllQueuesQuery } from '@/store/services/queue';
 import Select from 'react-select';
 import { IoMdMore } from 'react-icons/io';
 import { IoEye } from 'react-icons/io5';
 import { getTranslation } from '@/i18n';
 import dynamic from 'next/dynamic';
-
-const { t } = getTranslation();
+import { ApexOptions } from 'apexcharts';
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
+type ColumnChart = {
+    series: { name: string; data: number[] }[];
+    options: ApexOptions;
+};
+
+const { t } = getTranslation();
+
 export default function WorkspaceMetricsPage() {
-    const { data: workspaces = [], isLoading: loadingWorkspaces, error: errorWorkspaces } = useGetAllWorkspacesQuery(undefined);
+    const { data: queues = [], isLoading: loadingWorkspaces, error: errorWorkspaces } = useGetAllQueuesQuery({ wid: '1' });
 
-    const [wid, setWid] = useState('');
+    const [queueId, setQueueId] = useState('');
 
-    const handleWidChange = (option: any) => {
-        setWid(option.value);
+    const handleQueueChange = (option: any) => {
+        setQueueId(option.value);
     };
 
     const isDark = useTypedSelector((state) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
@@ -29,8 +35,8 @@ export default function WorkspaceMetricsPage() {
         setIsMounted(true);
     }, []);
 
-    const columnChart: any = useMemo(() => {
-        const columnChart: any = {
+    const columnChart = useMemo(() => {
+        const columnChart: ColumnChart = {
             series: [
                 {
                     name: 'Net Profit',
@@ -65,7 +71,8 @@ export default function WorkspaceMetricsPage() {
                     bar: {
                         horizontal: false,
                         columnWidth: '55%',
-                        endingShape: 'rounded',
+                        borderRadius: 5,
+                        borderRadiusApplication: "end",
                     },
                 },
                 grid: {
@@ -96,24 +103,37 @@ export default function WorkspaceMetricsPage() {
         return columnChart;
     }, [isDark, isRtl]);
 
-    const selectOptionsWorkspaces = useMemo(() => {
-        return workspaces.map((workspace) => ({
-            label: workspace.title,
-            value: workspace.id,
+    const selectOptionsQueues = useMemo(() => {
+        return queues.map((queue) => ({
+            label: queue.title,
+            value: queue.id,
         }));
-    }, [workspaces]);
+    }, [queues]);
 
     return (
-        <div className="min-h-[calc(100dvh - 72px)] flex flex-col items-center space-y-2 p-4">
-            <h1>{t('Workspace Metrics')}</h1>
+        <div className="flex min-h-[calc(100dvh-72px)] w-full justify-center p-4">
+            <div className="flex w-full max-w-screen-xl flex-col space-y-4">
+                <h1 className="text-2xl font-bold">{t('Queues Metrics')}</h1>
 
-            {/* @ts-ignore */}
-            <Select className="w-full" options={selectOptionsWorkspaces} value={workspaces.find((workspace) => String(workspace.id) === wid)} onChange={handleWidChange} isSearchable={false} />
+                <Select
+                    className="w-full"
+                    // @ts-ignore
+                    options={selectOptionsQueues}
+                    placeholder={t('Select a Queue')}
+                    value={queues.find((queue) => String(queue.id) === queueId)}
+                    onChange={handleQueueChange}
+                    isSearchable={false}
+                />
 
-            <MetricCard title="Average Wait Time" value={15} change={10} unit="min" color="bg-cyan-500" />
-            <MetricCard title="People Served" value={1025} change={-5} unit="" color="bg-purple-500" />
+                <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 lg:col-span-1">
+                        <MetricCard title="Average Wait Time" value={15} change={10} unit="min" color="bg-cyan-500" />
+                        <MetricCard title="People Served" value={1025} change={-5} unit="" color="bg-purple-500" />
+                    </div>
 
-            {isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} className="w-full rounded-lg bg-white dark:bg-black" type="bar" height={300} width={'100%'} />}
+                    <div className="lg:col-span-2">{isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} type="bar" height="100%" width="100%" />}</div>
+                </div>
+            </div>
         </div>
     );
 }
@@ -123,7 +143,7 @@ const MetricCard = ({ title, value, change, unit = '', color }: { title: string;
     const absChange = Math.abs(change);
 
     return (
-        <div className={`rounded-xl p-6 ${color} w-full text-white`}>
+        <div className={`rounded-xl p-6 ${color} text-white`}>
             <div className="mb-6 flex items-start justify-between">
                 <h2 className="text-lg font-medium">{title}</h2>
                 <IoMdMore className="h-6 w-6" />

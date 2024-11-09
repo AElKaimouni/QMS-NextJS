@@ -1,15 +1,16 @@
 'use client';
 
-import { useDeleteQueueMutation } from '@/store/services/queue';
 import { Queue } from '@/types/queue';
 import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { MdOutlineTimer } from 'react-icons/md';
 import { CardDropdown } from './QueueCardDropdown';
+
 import { usePathname, useRouter, useParams } from 'next/navigation';
 
 interface QueueCardProps {
     queue: Queue;
+    triggerDeleteConfimation: (id: string) => void;
 }
 
 const queueStatusClasses = {
@@ -20,19 +21,12 @@ const queueStatusClasses = {
     DELETED: 'bg-queueStatus-deleted',
 };
 
-export const QueueCard = ({ queue }: QueueCardProps) => {
-    const [deleteQueue] = useDeleteQueueMutation();
-
-    const { wid } = useParams();
+export const QueueCard = ({ queue, triggerDeleteConfimation }: QueueCardProps) => {
 
     const router = useRouter();
 
-    const handleDeleteQueue = () => {
-        deleteQueue({ id: queue.id })
-            .unwrap()
-            .catch((error) => {
-                console.error(error);
-            });
+    const handleDeleteQueue = (id: string) => {
+        triggerDeleteConfimation(id);
     };
 
     const handleDropdownClick = (e: MouseEvent) => {
@@ -40,14 +34,13 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
         e.stopPropagation();
     };
 
-    const pathname = usePathname();
-    const href = pathname + `/queues/${queue.id}/info`;
+    const href = `/queues/${queue.id}/info`;
 
     return (
         <Link
             href={href}
             passHref
-            className="relative w-full cursor-pointer rounded border border-[#e0e6ed] bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none"
+            className="relative flex w-full cursor-pointer flex-col flex-wrap rounded-lg border-[#e0e6ed] bg-white p-1 shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none sm:max-w-xs"
         >
             <div className="relative z-10 px-6 py-7">
                 <div className="flex justify-between">
@@ -63,12 +56,12 @@ export const QueueCard = ({ queue }: QueueCardProps) => {
                                     onClick: (e: MouseEvent) => {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        router.push(`/workspaces/${wid}/queue/${queue.id}/new`);
+                                        router.push(`/queue/${queue.id}/new`);
                                     },
                                 },
                                 {
                                     label: 'Delete',
-                                    onClick: handleDeleteQueue,
+                                    onClick: () => handleDeleteQueue(queue.id),
                                 },
                             ]}
                         />

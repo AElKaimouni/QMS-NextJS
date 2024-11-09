@@ -4,9 +4,10 @@ import { QueueCreation } from '@/types/queue';
 const initialState: QueueCreation = {
     title: '',
     description: '',
-    wid: '',
+    wid: '1',
     config: {},
 };
+;
 
 const createQueueSlice = createSlice({
     name: 'createqueue',
@@ -78,6 +79,6 @@ const createQueueSlice = createSlice({
     },
 });
 
-export const { updateTitle, updateDescription, updateDays, updateConfig, addField, removeField, updateEndTime, updateStartTime, setQueue, updateWid } = createQueueSlice.actions;
+export const { updateTitle, updateDescription, updateDays, updateConfig, addField, removeField, updateEndTime, updateStartTime, setQueue, updateWid,  } = createQueueSlice.actions;
 
 export default createQueueSlice.reducer;
