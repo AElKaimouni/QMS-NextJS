@@ -1,24 +1,23 @@
 'use client';
 
 import Dropdown from '@/components/dropdown';
-import IconLaptop from '@/components/icon/icon-laptop';
 import IconLogout from '@/components/icon/icon-logout';
 import IconMoon from '@/components/icon/icon-moon';
 import IconSun from '@/components/icon/icon-sun';
+import IconMenuCharts from '@/components/icon/menu/icon-menu-charts';
+import IconMenuDashboard from '@/components/icon/menu/icon-menu-dashboard';
 import { getTranslation } from '@/i18n';
 import { useAppDispatch, useTypedSelector } from '@/store';
+import { clearAuth } from '@/store/authSlice';
 import { useGetUserQuery } from '@/store/services/user';
 import { toggleRTL, toggleTheme } from '@/store/themeConfigSlice';
-import { clearAuth } from '@/store/authSlice';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { FaHome, FaPlus } from 'react-icons/fa';
-import { FaCircleInfo } from 'react-icons/fa6';
-import { ImStatsDots } from 'react-icons/im';
 import { IoPerson } from 'react-icons/io5';
+import IconMenuNotes from '@/components/icon/menu/icon-menu-notes';
 
-const { t, i18n } = getTranslation();
+const { t } = getTranslation();
 
 const Header = () => {
     const pathname = usePathname();
@@ -95,25 +94,24 @@ const Header = () => {
 
     const menu = [
         {
-            title: t('Home'),
-            Icon: FaHome,
-            link: `/queues`,
-        },
-
-        {
-            title: t('New queue'),
-            Icon: FaPlus,
-            link: '/queues/new',
+            title: t('Dashboard'),
+            Icon: IconMenuDashboard,
+            link: `/`,
         },
         {
-            title: t('Info'),
-            Icon: FaCircleInfo,
-            link: `/queues/${queueId}/info`,
-            disabled: !queueId,
+            title: t('Queues'),
+            Icon: IconMenuNotes,
+            link: '/queues',
         },
+        // {
+        //     title: t('Info'),
+        //     Icon: FaCircleInfo,
+        //     link: `/queues/${queueId}/info`,
+        //     disabled: !queueId,
+        // },
         {
             title: t('Metrics'),
-            Icon: ImStatsDots,
+            Icon: IconMenuCharts,
             link: `/queues/metrics`,
         },
         // {
@@ -173,20 +171,20 @@ const Header = () => {
                 <div className="relative flex w-full items-center justify-between bg-white px-5 py-2.5 dark:bg-black">
                     <div className="horizontal-logo flex items-center justify-between lg:hidden ltr:mr-2 rtl:ml-2">
                         <Link href="/" className="main-logo flex shrink-0 items-center">
-                            <img className="inline w-28 ltr:-ml-1 rtl:-mr-1" src="/assets/images/quickq.png" alt="logo" />
+                            <img className="inline w-24 ltr:-ml-1 rtl:-mr-1" src="/assets/images/quickq.png" alt="logo" />
                             {/* <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 dark:text-white-light md:inline ltr:ml-1.5 rtl:mr-1.5">QuickQ</span> */}
                         </Link>
                     </div>
 
                     <div className="flex items-center dark:text-[#d0d2d6] lg:space-x-2 ltr:ml-auto ltr:sm:ml-0 rtl:mr-auto rtl:space-x-reverse sm:rtl:mr-0">
                         <div className="sm:ltr:mr-auto sm:rtl:ml-auto">
-                            <ul className="horizontal-menu ml-20 font-semibold text-black !shadow-none md:!flex lg:space-x-1.5 xl:space-x-8 rtl:space-x-reverse">
+                            <ul className="horizontal-menu font-semibold text-black !shadow-none md:!flex lg:space-x-1 xl:space-x-8 rtl:space-x-reverse">
                                 {menu.map((m) => (
                                     <li key={m.title} className="menu relative">
-                                        <Link href={m.link} type="button" className="nav-link active">
+                                        <Link href={m.link} type="button" className="nav-link">
                                             <div className="flex items-center">
-                                                <m.Icon className="shrink-0 dark:!text-white-dark" />
-                                                <span className="px-1 dark:!text-white-dark">{t(m.title)}</span>
+                                                <m.Icon className="size-5 shrink-0 dark:!text-white-dark" />
+                                                <span className="px-1 text-lg/none text-white">{t(m.title)}</span>
                                             </div>
                                         </Link>
                                     </li>
@@ -198,10 +196,7 @@ const Header = () => {
                         <div>
                             {themeConfig.theme === 'light' ? (
                                 <button
-                                    className={`${
-                                        themeConfig.theme === 'light' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                                    }`}
+                                    className={`${themeConfig.theme === 'light' && 'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary'}`}
                                     onClick={() => dispatch(toggleTheme('dark'))}
                                 >
                                     <IconSun />
@@ -211,24 +206,10 @@ const Header = () => {
                             )}
                             {themeConfig.theme === 'dark' && (
                                 <button
-                                    className={`${
-                                        themeConfig.theme === 'dark' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                                    }`}
-                                    onClick={() => dispatch(toggleTheme('system'))}
-                                >
-                                    <IconMoon />
-                                </button>
-                            )}
-                            {themeConfig.theme === 'system' && (
-                                <button
-                                    className={`${
-                                        themeConfig.theme === 'system' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                                    }`}
+                                    className={`${themeConfig.theme === 'dark' && 'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary'}`}
                                     onClick={() => dispatch(toggleTheme('light'))}
                                 >
-                                    <IconLaptop />
+                                    <IconMoon />
                                 </button>
                             )}
                         </div>
@@ -265,12 +246,12 @@ const Header = () => {
                             <Dropdown
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
                                 btnClassName="relative group block"
-                                button={<IoPerson className="!z-50 h-9 w-9 rounded-full bg-gray-100 object-cover text-blue-400 saturate-50 group-hover:saturate-100" />}
+                                button={<img src="/assets/images/user.png" className="!z-50 h-9 w-9 rounded-full bg-gray-100 object-cover saturate-50 group-hover:saturate-100" />}
                             >
                                 <ul className="w-[230px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                                     <li>
                                         <div className="flex items-center px-4 py-4">
-                                            <IoPerson className="h-10 w-10 rounded-md object-cover" />
+                                            <IoPerson className="h-10 w-10 rounded-full object-cover" />
                                             <div className="truncate ltr:pl-4 rtl:pr-4">
                                                 <h4 className="text-base">
                                                     {user?.name}

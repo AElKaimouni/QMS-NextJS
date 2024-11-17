@@ -3,6 +3,7 @@
 import { useDeleteQueueMutation, useGetAllQueuesQuery } from '@/store/services/queue';
 import { QueueCard } from './QueueCard';
 import { FaPlus } from 'react-icons/fa';
+import IconPlus from "@/components/icon/icon-plus"
 import Loader from './loader';
 import { getTranslation } from '@/i18n';
 import Link from 'next/link';
@@ -59,27 +60,25 @@ export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
 
     if (queues.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-5">
-                <p className="text-center text-gray-500">{t('No queues found. Please create a new queue')}</p>
-                <div className="mt-4 flex items-center justify-center">
-                    <Link href={`/queues/new`} className="btn btn-primary">
-                        <FaPlus className="mr-2 text-xl" />
-                        {t('Create Queue')}
-                    </Link>
-                </div>
-            </div>
+            <>
+                <Link href={`/queues/new`} className="btn btn-primary ml-auto">
+                    <IconPlus className="mr-2 text-xl" />
+                    {t('Create Queue')}
+                </Link>
+                {/* <p className="text-center text-gray-500">{t('No queues found. Please create a new queue')}</p> */}
+            </>
         );
     }
 
     return (
-        <div className="min-h-[calc(100dvh - 72px)] flex w-full flex-col items-center justify-center gap-4 p-4 sm:flex-row sm:flex-wrap">
+        <>
             {queues
                 .toSorted((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
                 .map((queue) => (
                     <QueueCard key={queue.id} queue={queue} triggerDeleteConfimation={triggerDeleteConfimation} />
                 ))}
             <DeleteComfirmationModal isOpen={deleteConfirmation} onClose={handleCancelDelete} onConfirm={handleDeleteQueue} />
-        </div>
+        </>
     );
 }
 

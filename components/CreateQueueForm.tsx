@@ -25,7 +25,6 @@ interface CreateQueueFormProps {
 }
 
 export default function CreateQueueForm() {
-
     const searchParams = useSearchParams();
 
     const isEdit = searchParams.get('edit') === 'true';
@@ -104,14 +103,14 @@ export default function CreateQueueForm() {
     }
 
     return (
-        <div className="h-full flex items-center justify-center">
+        <div className="flex h-full items-center justify-center">
             <div className="flex w-full max-w-screen-md flex-col">
                 <div className="sticky left-0 right-0 top-[72px] z-50 w-full flex-[0.5] bg-gray-50 p-4">
                     <ol className="flex w-full items-center justify-center text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
                         {steps.map((step, index) => (
                             <li
                                 key={step.fullLabel}
-                                className={`flex items-center ${index <= currentStep ? 'text-blue-600 dark:text-blue-500' : ''} ${
+                                className={`flex items-center whitespace-nowrap ${index <= currentStep ? 'text-blue-600 dark:text-blue-500' : ''} ${
                                     index < steps.length - 1
                                         ? "after:border-1 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10"
                                         : ''
