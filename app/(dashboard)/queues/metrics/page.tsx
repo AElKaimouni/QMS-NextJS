@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import Dropdown from '@/components/dropdown';
+import IconEye from '@/components/icon/icon-eye';
+import IconHorizontalDots from '@/components/icon/icon-horizontal-dots';
+import { getTranslation } from '@/i18n';
 import { useTypedSelector } from '@/store';
 import { useGetAllQueuesQuery } from '@/store/services/queue';
-import Select from 'react-select';
-import { getTranslation } from '@/i18n';
-import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
-import Dropdown from '@/components/dropdown';
-import IconHorizontalDots from '@/components/icon/icon-horizontal-dots';
-import IconEye from '@/components/icon/icon-eye';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import Select from 'react-select';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
