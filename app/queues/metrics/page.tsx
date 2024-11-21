@@ -4,11 +4,14 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTypedSelector } from '@/store';
 import { useGetAllQueuesQuery } from '@/store/services/queue';
 import Select from 'react-select';
-import { IoMdMore } from 'react-icons/io';
-import { IoEye } from 'react-icons/io5';
 import { getTranslation } from '@/i18n';
 import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
+import Dropdown from '@/components/dropdown';
+import IconHorizontalDots from '@/components/icon/icon-horizontal-dots';
+import IconEye from '@/components/icon/icon-eye';
+import Link from 'next/link';
+
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type ColumnChart = {
@@ -113,54 +116,166 @@ export default function WorkspaceMetricsPage() {
     return (
         <div className="flex min-h-[calc(100dvh-6rem)] w-full justify-center p-4">
             <div className="flex w-full max-w-screen-xl flex-col space-y-4">
-                <h1 className="text-2xl font-bold">{t('Queues Metrics')}</h1>
+                <ul className="flex space-x-2 sm:text-lg rtl:space-x-reverse">
+                    <li>
+                        <Link href="/" className="text-primary hover:underline">
+                            Dashboard
+                        </Link>
+                    </li>
+                    <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                        <Link href="/queues" className="text-primary hover:underline">
+                            Queues
+                        </Link>
+                    </li>
+                    <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                        <span>Metrics</span>
+                    </li>
+                </ul>
 
                 <Select
                     className="w-full"
                     // @ts-ignore
                     options={selectOptionsQueues}
                     placeholder={t('Select a Queue')}
-                    value={queues.find((queue) => String(queue.id) === queueId)}
+                    // value={queues.find((queue) => String(queue.id) === queueId)}
                     onChange={handleQueueChange}
                     isSearchable={false}
+                    isDisabled={loadingWorkspaces}
                 />
-
-                <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-3">
-                    <div className="grid grid-cols-1 gap-4 lg:col-span-1">
-                        <MetricCard title="Average Wait Time" value={15} change={10} unit="min" color="bg-cyan-500" />
-                        <MetricCard title="People Served" value={1025} change={-5} unit="" color="bg-purple-500" />
+                <div className="mb-6 grid grid-cols-1 gap-6 text-white sm:grid-cols-2 xl:grid-cols-4">
+                    {/* Queue Length */}
+                    <div className="panel bg-gradient-to-r from-cyan-500 to-cyan-400">
+                        <div className="flex justify-between">
+                            <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Queue Length</div>
+                            <div className="dropdown">
+                                <Dropdown
+                                    offset={[0, 5]}
+                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
+                                    btnClassName="hover:opacity-80"
+                                    button={<IconHorizontalDots className="opacity-70 hover:opacity-80" />}
+                                >
+                                    <ul className="text-black dark:text-white-dark">
+                                        <li>
+                                            <button type="button">View Details</button>
+                                        </li>
+                                        <li>
+                                            <button type="button">Edit Metrics</button>
+                                        </li>
+                                    </ul>
+                                </Dropdown>
+                            </div>
+                        </div>
+                        <div className="mt-5 flex items-center">
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 12 </div>
+                            <div className="badge bg-white/30">+ 8% </div>
+                        </div>
+                        <div className="mt-5 flex items-center font-semibold">
+                            <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                            Last Hour: 10
+                        </div>
                     </div>
 
-                    <div className="lg:col-span-2">{isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} type="bar" height="100%" width="100%" />}</div>
+                    {/* Average Wait Time */}
+                    <div className="panel bg-gradient-to-r from-violet-500 to-violet-400">
+                        <div className="flex justify-between">
+                            <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Avg Wait Time</div>
+                            <div className="dropdown">
+                                <Dropdown
+                                    offset={[0, 5]}
+                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
+                                    btnClassName="hover:opacity-80"
+                                    button={<IconHorizontalDots className="opacity-70 hover:opacity-80" />}
+                                >
+                                    <ul className="text-black dark:text-white-dark">
+                                        <li>
+                                            <button type="button">View Details</button>
+                                        </li>
+                                        <li>
+                                            <button type="button">Edit Metrics</button>
+                                        </li>
+                                    </ul>
+                                </Dropdown>
+                            </div>
+                        </div>
+                        <div className="mt-5 flex items-center">
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 18 min </div>
+                            <div className="badge bg-white/30">- 5% </div>
+                        </div>
+                        <div className="mt-5 flex items-center font-semibold">
+                            <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                            Last Hour: 20 min
+                        </div>
+                    </div>
+
+                    {/* Active Queues */}
+                    <div className="panel bg-gradient-to-r from-blue-500 to-blue-400">
+                        <div className="flex justify-between">
+                            <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Active Queues</div>
+                            <div className="dropdown">
+                                <Dropdown
+                                    offset={[0, 5]}
+                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
+                                    btnClassName="hover:opacity-80"
+                                    button={<IconHorizontalDots className="opacity-70 hover:opacity-80" />}
+                                >
+                                    <ul className="text-black dark:text-white-dark">
+                                        <li>
+                                            <button type="button">View Details</button>
+                                        </li>
+                                        <li>
+                                            <button type="button">Edit Metrics</button>
+                                        </li>
+                                    </ul>
+                                </Dropdown>
+                            </div>
+                        </div>
+                        <div className="mt-5 flex items-center">
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 5 </div>
+                            <div className="badge bg-white/30">+ 2 </div>
+                        </div>
+                        <div className="mt-5 flex items-center font-semibold">
+                            <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                            Last Hour: 3
+                        </div>
+                    </div>
+
+                    {/* Served Customers */}
+                    <div className="panel bg-gradient-to-r from-fuchsia-500 to-fuchsia-400">
+                        <div className="flex justify-between">
+                            <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Served Customers</div>
+                            <div className="dropdown">
+                                <Dropdown
+                                    offset={[0, 5]}
+                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
+                                    btnClassName="hover:opacity-80"
+                                    button={<IconHorizontalDots className="opacity-70 hover:opacity-80" />}
+                                >
+                                    <ul className="text-black dark:text-white-dark">
+                                        <li>
+                                            <button type="button">View Details</button>
+                                        </li>
+                                        <li>
+                                            <button type="button">Edit Metrics</button>
+                                        </li>
+                                    </ul>
+                                </Dropdown>
+                            </div>
+                        </div>
+                        <div className="mt-5 flex items-center">
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 54 </div>
+                            <div className="badge bg-white/30">+ 10% </div>
+                        </div>
+                        <div className="mt-5 flex items-center font-semibold">
+                            <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                            Last Hour: 45
+                        </div>
+                    </div>
+                </div>
+                <div className="grid h-[50vh] grid-cols-1 sm:grid-cols-2">
+                    <div>{isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} type="bar" height="100%" width="100%" />}</div>
+                    <div>{isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} type="bar" height="100%" width="100%" />}</div>
                 </div>
             </div>
         </div>
     );
 }
-
-const MetricCard = ({ title, value, change, unit = '', color }: { title: string; value: number; change: number; unit?: string; color: string }) => {
-    const isPositive = change > 0;
-    const absChange = Math.abs(change);
-
-    return (
-        <div className={`rounded-xl p-6 ${color} text-white`}>
-            <div className="mb-6 flex items-start justify-between">
-                <h2 className="text-lg font-medium">{title}</h2>
-                <IoMdMore className="h-6 w-6" />
-            </div>
-
-            <div className="mb-4 text-4xl font-semibold">{`${value} ${unit}`}</div>
-
-            <div className="flex items-center gap-2">
-                <IoEye className="h-5 w-5" />
-                <div className="flex items-center gap-2">
-                    <span>Compared Last week</span>
-                    <span className={`rounded-md px-2 py-1 ${isPositive ? 'bg-white/20' : 'bg-white/20'}`}>
-                        {isPositive ? '+' : '-'}
-                        {absChange}%
-                    </span>
-                </div>
-            </div>
-        </div>
-    );
-};

@@ -9,6 +9,7 @@ import Overlay from '@/components/layouts/overlay';
 import Portals from '@/components/portals';
 import ContentAnimation from '@/components/layouts/content-animation';
 import MobileNav from '@/components/layouts/mobile-nav';
+import Footer from "@/components/layouts/footer"
 
 export const metadata: Metadata = {
     title: 'QUICKQ App',
@@ -46,6 +47,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                 <Portals />
 
                                 <MobileNav />
+
+                                <Footer />
                             </div>
                         </MainContainer>
                     </div>

@@ -574,98 +574,73 @@ const ComponentsDashboard = () => {
 
                 <div className="panel h-full w-full">
                     <div className="mb-5 flex items-center justify-between">
-                        <h5 className="text-lg font-semibold dark:text-white-light">Recent Orders</h5>
+                        <h5 className="text-lg font-semibold dark:text-white-light">Recent Reservations</h5>
                     </div>
                     <div className="table-responsive">
                         <table>
                             <thead>
                                 <tr>
-                                    <th className="ltr:rounded-l-md rtl:rounded-r-md">Customer</th>
-                                    <th>Product</th>
-                                    <th>Invoice</th>
-                                    <th>Price</th>
+                                    <th className="ltr:rounded-l-md rtl:rounded-r-md">First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Wait Time</th>
                                     <th className="ltr:rounded-r-md rtl:rounded-l-md">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
                                     <td className="min-w-[150px] text-black dark:text-white">
-                                        <div className="flex items-center">
-                                            <img className="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="/assets/images/profile-6.jpeg" alt="avatar" />
-                                            <span className="whitespace-nowrap">Luke Ivory</span>
-                                        </div>
+                                        <span className="whitespace-nowrap">John</span>
                                     </td>
-                                    <td className="text-primary">Headphone</td>
+                                    <td>Doe</td>
+                                    <td>john.doe@example.com</td>
+                                    <td>15 min</td>
                                     <td>
-                                        <Link href="/apps/invoice/preview">#46894</Link>
-                                    </td>
-                                    <td>$56.07</td>
-                                    <td>
-                                        <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Paid</span>
+                                        <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
                                     </td>
                                 </tr>
                                 <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="text-black dark:text-white">
-                                        <div className="flex items-center">
-                                            <img className="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="/assets/images/profile-7.jpeg" alt="avatar" />
-                                            <span className="whitespace-nowrap">Andy King</span>
-                                        </div>
+                                    <td className="min-w-[150px] text-black dark:text-white">
+                                        <span className="whitespace-nowrap">Jane</span>
                                     </td>
-                                    <td className="text-info">Nike Sport</td>
+                                    <td>Smith</td>
+                                    <td>jane.smith@example.com</td>
+                                    <td>5 min</td>
                                     <td>
-                                        <Link href="/apps/invoice/preview">#76894</Link>
-                                    </td>
-                                    <td>$126.04</td>
-                                    <td>
-                                        <span className="badge bg-secondary shadow-md dark:group-hover:bg-transparent">Shipped</span>
+                                        <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Served</span>
                                     </td>
                                 </tr>
                                 <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="text-black dark:text-white">
-                                        <div className="flex items-center">
-                                            <img className="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="/assets/images/profile-8.jpeg" alt="avatar" />
-                                            <span className="whitespace-nowrap">Laurie Fox</span>
-                                        </div>
+                                    <td className="min-w-[150px] text-black dark:text-white">
+                                        <span className="whitespace-nowrap">Emily</span>
                                     </td>
-                                    <td className="text-warning">Sunglasses</td>
+                                    <td>Johnson</td>
+                                    <td>emily.johnson@example.com</td>
+                                    <td>20 min</td>
                                     <td>
-                                        <Link href="/apps/invoice/preview">#66894</Link>
-                                    </td>
-                                    <td>$56.07</td>
-                                    <td>
-                                        <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Paid</span>
+                                        <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
                                     </td>
                                 </tr>
                                 <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="text-black dark:text-white">
-                                        <div className="flex items-center">
-                                            <img className="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="/assets/images/profile-9.jpeg" alt="avatar" />
-                                            <span className="whitespace-nowrap">Ryan Collins</span>
-                                        </div>
+                                    <td className="min-w-[150px] text-black dark:text-white">
+                                        <span className="whitespace-nowrap">Michael</span>
                                     </td>
-                                    <td className="text-danger">Sport</td>
+                                    <td>Brown</td>
+                                    <td>michael.brown@example.com</td>
+                                    <td>10 min</td>
                                     <td>
-                                        <button type="button">#75844</button>
-                                    </td>
-                                    <td>$110.00</td>
-                                    <td>
-                                        <span className="badge bg-secondary shadow-md dark:group-hover:bg-transparent">Shipped</span>
+                                        <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Served</span>
                                     </td>
                                 </tr>
                                 <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="text-black dark:text-white">
-                                        <div className="flex items-center">
-                                            <img className="h-8 w-8 rounded-md object-cover ltr:mr-3 rtl:ml-3" src="/assets/images/profile-10.jpeg" alt="avatar" />
-                                            <span className="whitespace-nowrap">Irene Collins</span>
-                                        </div>
+                                    <td className="min-w-[150px] text-black dark:text-white">
+                                        <span className="whitespace-nowrap">Sarah</span>
                                     </td>
-                                    <td className="text-secondary">Speakers</td>
+                                    <td>Wilson</td>
+                                    <td>sarah.wilson@example.com</td>
+                                    <td>12 min</td>
                                     <td>
-                                        <Link href="/apps/invoice/preview">#46894</Link>
-                                    </td>
-                                    <td>$56.07</td>
-                                    <td>
-                                        <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Paid</span>
+                                        <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
                                     </td>
                                 </tr>
                             </tbody>
