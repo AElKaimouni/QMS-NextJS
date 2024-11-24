@@ -4,7 +4,6 @@ import { useConsultQueueQuery } from '@/store/services/queue';
 import { getTranslation } from '@/i18n';
 import Loader from '@/components/loader';
 import Link from 'next/link';
-import { HiOutlineInformationCircle } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
 import NotFound from '@/app/not-found';
 
@@ -50,10 +49,8 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
     return (
         <div className="min-h-[calc(100dvh-6rem)] p-4">
             <div className="mx-auto max-w-sm rounded-lg border border-gray-200 bg-white p-6">
-                <div className="mb-6 flex items-center justify-center gap-2 text-gray-600">
-                    <HiOutlineInformationCircle size={24} />
-                    <span>Info</span>
-                    {fetchingQueue && <Loader size="small" />}
+                <div className="mb-6 flex items-center justify-center gap-2">
+                    <h1 className='text-4xl font-semibold'>{queue?.title}</h1>
                 </div>
 
                 {/* Line Information */}

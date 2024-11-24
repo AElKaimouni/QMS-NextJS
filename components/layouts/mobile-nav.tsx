@@ -1,12 +1,12 @@
 'use client';
 
 import { getTranslation } from '@/i18n';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
-import { FaHome, FaPlus } from 'react-icons/fa';
-import { FaCircleInfo } from 'react-icons/fa6';
-import { ImStatsDots } from 'react-icons/im';
-import Link from 'next/link';
+import IconMenuCharts from '@/components/icon/menu/icon-menu-charts';
+import IconMenuDashboard from '@/components/icon/menu/icon-menu-dashboard';
+import IconMenuNotes from '@/components/icon/menu/icon-menu-notes';
 
 const { t } = getTranslation();
 
@@ -80,24 +80,19 @@ const MobileNav = () => {
     // }, [pathname, last_workspace_id, wid, queueId, isQueue]);
     const menu = [
         {
-            title: t('Home'),
-            Icon: FaHome,
-            link: `/queues`,
+            title: t('Dashboard'),
+            Icon: IconMenuDashboard,
+            link: `/`,
         },
         {
-            title: t('New'),
-            Icon: FaPlus,
-            link: '/queues/new',
+            title: t('Queues'),
+            Icon: IconMenuNotes,
+            link: '/queues',
         },
-        {
-            title: t('Info'),
-            Icon: FaCircleInfo,
-            link: `/queues/${queueId}/info`,
-            disabled: !queueId,
-        },
+        
         {
             title: t('Metrics'),
-            Icon: ImStatsDots,
+            Icon: IconMenuCharts,
             link: `/queues/metrics`,
         },
         // {
@@ -109,7 +104,7 @@ const MobileNav = () => {
     return (
         <div className="sticky bottom-0 z-50 w-full bg-gray-50 dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none md:hidden">
             <div style={{ width: 'calc(100% - 1.5rem)' }} className="mobile-nav mb-3 ml-3 h-16 max-w-lg rounded-full border border-gray-200 bg-white dark:border-gray-800 dark:bg-black">
-                <div className="mx-auto grid h-full max-w-lg grid-cols-4">
+                <div className="mx-auto grid h-full max-w-lg grid-cols-3">
                     {menu.map((item, index) => {
                         const isActive = item.link === pathname;
 
