@@ -1,3 +1,5 @@
+'use client';
+
 import IconPlus from '@/components/icon/icon-plus';
 import QueuesInWorkspace from '@/components/QueuesInWorkspace';
 import { getTranslation } from '@/i18n';

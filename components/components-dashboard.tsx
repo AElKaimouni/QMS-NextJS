@@ -1,16 +1,8 @@
 'use client';
 
-import Dropdown from '@/components/dropdown';
-import IconCreditCard from '@/components/icon/icon-credit-card';
-import IconHorizontalDots from '@/components/icon/icon-horizontal-dots';
-import IconInbox from '@/components/icon/icon-inbox';
-import IconShoppingCart from '@/components/icon/icon-shopping-cart';
-import IconTag from '@/components/icon/icon-tag';
 import { useTypedSelector } from '@/store';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import IconClock from '@/components/icon/icon-clock';
 import IconEye from './icon/icon-eye';
 
 const ComponentsDashboard = () => {
