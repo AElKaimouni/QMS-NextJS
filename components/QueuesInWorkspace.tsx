@@ -2,7 +2,6 @@
 
 import { useDeleteQueueMutation, useGetAllQueuesQuery } from '@/store/services/queue';
 import { QueueCard } from './QueueCard';
-import { FaPlus } from 'react-icons/fa';
 import IconPlus from '@/components/icon/icon-plus';
 import Loader from './loader';
 import { getTranslation } from '@/i18n';
@@ -72,11 +71,11 @@ export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
 
     return (
         <>
-            <Link href={`/queues/new`} className="btn btn-primary ml-auto absolute right-10">
+            <Link href={`/queues/new`} className="btn btn-primary ml-auto mt-2 w-full sm:absolute sm:right-10">
                 <IconPlus className="mr-2 text-xl" />
                 {t('Create Queue')}
             </Link>
-            <div className="flex flex-wrap gap-4 mt-4">
+            <div className="mt-4 flex flex-wrap gap-4">
                 {queues
                     .toSorted((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
                     .map((queue) => (

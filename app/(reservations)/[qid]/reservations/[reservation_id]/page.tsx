@@ -73,11 +73,11 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
     return (
         <div className="min-h-[calc(100dvh-6rem)] p-4">
             <div className="mx-auto max-w-sm rounded-lg border border-gray-200 bg-white p-6">
+                <h1 className='text-center text-4xl mb-5'>{reservation?.queueTitle}</h1>
                 <div className="mb-6 flex items-center justify-center gap-2 text-gray-600">
                     <QRCode value={location.href} size={128} />
                 </div>
 
-                {/* Line Information */}
                 <div className="mb-8 space-y-6">
                     <div className="text-center">
                         <div className="mb-1 text-gray-600">{t('Line number')}:</div>
