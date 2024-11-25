@@ -46,7 +46,7 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
 
     const handleDownloadPDF = () => {
         axios
-            .get(`http://${location.host}/api/reservations/${reservation_id}/generate-pdf?token=${encodeURIComponent(reservation_token)}`, {
+            .get(`https://${location.host}/api/reservations/${reservation_id}/generate-pdf?token=${encodeURIComponent(reservation_token)}`, {
                 responseType: 'blob',
                 headers: {
                     Accept: 'application/pdf',
