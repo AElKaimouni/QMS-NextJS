@@ -31,8 +31,8 @@ const CoverLogin = () => {
                         </div>
                     </div> */}
 
-                    <div className="relative flex w-full flex-col items-center justify-center bg-white/60 pb-16 p-4 backdrop-blur-lg dark:bg-black/50 sm:px-6">
-                        <img src="/assets/images/quickq.png" alt="Logo" className="w-1/2" />
+                    <div className="relative flex w-full flex-col items-center justify-center bg-white/60 p-4 backdrop-blur-lg dark:bg-black/50 sm:px-6">
+                        
                         {/* <div className="flex w-full max-w-[440px] items-center gap-2 lg:absolute lg:end-6 lg:top-6 lg:max-w-full">
                             <Link href="/" className="block w-8 lg:hidden">
                                 <img src="/assets/images/logo.svg" alt="Logo" className="mx-auto w-10" />
@@ -40,7 +40,8 @@ const CoverLogin = () => {
                             <LanguageDropdown className="ms-auto w-max" />
                         </div> */}
                         <div className="mt-8 w-full max-w-[440px]">
-                            <div className="mb-5 text-center">
+                            <div className="mb-5 text-center flex items-center flex-col">
+                                <img src="/assets/images/quickq.png" alt="Logo" className="w-60" />
                                 <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Sign in</h1>
                                 {/* <p className="text-base font-bold leading-normal text-white-dark">Enter your email and password to login</p> */}
                             </div>

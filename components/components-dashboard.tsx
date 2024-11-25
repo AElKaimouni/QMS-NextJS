@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import IconClock from '@/components/icon/icon-clock';
+import IconEye from './icon/icon-eye';
 
 const ComponentsDashboard = () => {
     const isDark = useTypedSelector((state) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
@@ -390,29 +391,71 @@ const ComponentsDashboard = () => {
     return (
         <div>
             <div className="pt-5">
+                <div className="mb-6 grid grid-cols-1 gap-6 text-white sm:grid-cols-2 xl:grid-cols-4">
+                    {/* Total Queue */}
+                    <div className="panel bg-gradient-to-r from-cyan-500 to-cyan-400">
+                        <div className="flex justify-between">
+                            <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Total Queue</div>
+                        </div>
+                        <div className="mt-5 flex items-center">
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 7 </div>
+                            <div className="badge bg-white/30">+ 8% </div>
+                        </div>
+                        <div className="mt-5 flex items-center font-semibold">
+                            <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                            Last Hour: 10
+                        </div>
+                    </div>
+
+                    {/* Average Wait Time */}
+                    <div className="panel bg-gradient-to-r from-violet-500 to-violet-400">
+                        <div className="flex justify-between">
+                            <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Active Queues</div>
+                        </div>
+                        <div className="mt-5 flex items-center">
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 3 </div>
+                            <div className="badge bg-white/30">- 5% </div>
+                        </div>
+                        <div className="mt-5 flex items-center font-semibold">
+                            <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                            Last Hour: 20 min
+                        </div>
+                    </div>
+
+                    {/* Active Queues */}
+                    <div className="panel bg-gradient-to-r from-blue-500 to-blue-400">
+                        <div className="flex justify-between">
+                            <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Total Reservations</div>
+                        </div>
+                        <div className="mt-5 flex items-center">
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 876 </div>
+                            <div className="badge bg-white/30">+ 2 </div>
+                        </div>
+                        <div className="mt-5 flex items-center font-semibold">
+                            <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                            Last Hour: 3
+                        </div>
+                    </div>
+
+                    {/* Served Customers */}
+                    <div className="panel bg-gradient-to-r from-fuchsia-500 to-fuchsia-400">
+                        <div className="flex justify-between">
+                            <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Served Customers</div>
+                        </div>
+                        <div className="mt-5 flex items-center">
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 756 </div>
+                            <div className="badge bg-white/30">+ 10% </div>
+                        </div>
+                        <div className="mt-5 flex items-center font-semibold">
+                            <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                            Last Hour: 45
+                        </div>
+                    </div>
+                </div>
                 <div className="mb-6 grid gap-6 xl:grid-cols-3">
                     <div className="panel h-full xl:col-span-2">
                         <div className="mb-5 flex items-center justify-between dark:text-white-light">
                             <h5 className="text-lg font-semibold">Queue Traffic</h5>
-                            <div className="dropdown">
-                                <Dropdown
-                                    offset={[0, 1]}
-                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                    button={<IconHorizontalDots className="text-black/70 hover:!text-primary dark:text-white/70" />}
-                                >
-                                    <ul>
-                                        <li>
-                                            <button type="button">Hourly</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Daily</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Weekly</button>
-                                        </li>
-                                    </ul>
-                                </Dropdown>
-                            </div>
                         </div>
                         <p className="text-lg dark:text-white-light/90">
                             Total People in Queue <span className="ml-2 text-primary">157</span>
@@ -448,205 +491,154 @@ const ComponentsDashboard = () => {
                     </div>
                 </div>
 
-                <div className="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                    <div className="panel h-full sm:col-span-2 xl:col-span-1">
-                        <div className="mb-5 flex items-center">
-                            <h5 className="text-lg font-semibold dark:text-white-light">
-                                Average Wait Times
-                                <span className="block text-sm font-normal text-white-dark">By queue.</span>
-                            </h5>
-                            <div className="relative ltr:ml-auto rtl:mr-auto">
-                                <div className="grid h-11 w-11 place-content-center rounded-full bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
-                                    <IconClock />
-                                </div>
-                            </div>
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
+                    
+                    <div className="panel h-full w-full">
+                        <div className="mb-5 flex items-center justify-between">
+                            <h5 className="text-lg font-semibold dark:text-white-light">Recent Reservations</h5>
                         </div>
-                        <div>
-                            <div className="rounded-lg bg-white dark:bg-black">
-                                {isMounted ? (
-                                    <ReactApexChart series={waitingTimes.series} options={waitingTimes.options} type="bar" height={160} width={'100%'} />
-                                ) : (
-                                    <div className="grid min-h-[325px] place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
-                                        <span className="inline-flex h-5 w-5 animate-spin rounded-full border-2 border-black !border-l-transparent dark:border-white"></span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="panel h-full">
-                        <div className="mb-5 flex items-center justify-between dark:text-white-light">
-                            <h5 className="text-lg font-semibold">Summary</h5>
-                            <div className="dropdown">
-                                <Dropdown
-                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                    button={<IconHorizontalDots className="h-5 w-5 text-black/70 hover:!text-primary dark:text-white/70" />}
-                                >
-                                    <ul>
-                                        <li>
-                                            <button type="button">View Report</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Edit Report</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Mark as Done</button>
-                                        </li>
-                                    </ul>
-                                </Dropdown>
-                            </div>
-                        </div>
-                        <div className="space-y-9">
-                            <div className="flex items-center">
-                                <div className="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                                    <div className="grid h-9 w-9 place-content-center  rounded-full bg-secondary-light text-secondary dark:bg-secondary dark:text-secondary-light">
-                                        <IconInbox />
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="mb-2 flex font-semibold text-white-dark">
-                                        <h6>Income</h6>
-                                        <p className="ltr:ml-auto rtl:mr-auto">$92,600</p>
-                                    </div>
-                                    <div className="h-2 rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                        <div className="h-full w-11/12 rounded-full bg-gradient-to-r from-[#7579ff] to-[#b224ef]"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                                    <div className="grid h-9 w-9 place-content-center rounded-full bg-success-light text-success dark:bg-success dark:text-success-light">
-                                        <IconTag />
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="mb-2 flex font-semibold text-white-dark">
-                                        <h6>Profit</h6>
-                                        <p className="ltr:ml-auto rtl:mr-auto">$37,515</p>
-                                    </div>
-                                    <div className="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                        <div className="h-full w-full rounded-full bg-gradient-to-r from-[#3cba92] to-[#0ba360]" style={{ width: '65%' }}></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="h-9 w-9 ltr:mr-3 rtl:ml-3">
-                                    <div className="grid h-9 w-9 place-content-center rounded-full bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
-                                        <IconCreditCard />
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="mb-2 flex font-semibold text-white-dark">
-                                        <h6>Expenses</h6>
-                                        <p className="ltr:ml-auto rtl:mr-auto">$55,085</p>
-                                    </div>
-                                    <div className="h-2 w-full rounded-full bg-dark-light shadow dark:bg-[#1b2e4b]">
-                                        <div className="h-full w-full rounded-full bg-gradient-to-r from-[#f09819] to-[#ff5858]" style={{ width: '80%' }}></div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th className="ltr:rounded-l-md rtl:rounded-r-md">First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th className="ltr:rounded-r-md rtl:rounded-l-md">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">John</span>
+                                        </td>
+                                        <td>Doe</td>
+                                        <td>john.doe@example.com</td>
+                                        <td>
+                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Jane</span>
+                                        </td>
+                                        <td>Smith</td>
+                                        <td>jane.smith@example.com</td>
+                                        <td>
+                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Served</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Emily</span>
+                                        </td>
+                                        <td>Johnson</td>
+                                        <td>emily.johnson@example.com</td>
+                                        <td>
+                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Michael</span>
+                                        </td>
+                                        <td>Brown</td>
+                                        <td>michael.brown@example.com</td>
+                                        <td>
+                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Served</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Sarah</span>
+                                        </td>
+                                        <td>Wilson</td>
+                                        <td>sarah.wilson@example.com</td>
+                                        <td>
+                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div className="panel h-full p-0">
-                        <div className="absolute flex w-full items-center justify-between p-5">
-                            <div className="relative">
-                                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-success-light text-success dark:bg-success dark:text-success-light">
-                                    <IconShoppingCart />
-                                </div>
-                            </div>
-                            <h5 className="text-2xl font-semibold dark:text-white-light ltr:text-right rtl:text-left">
-                                3,192
-                                <span className="block text-sm font-normal">Total Orders</span>
-                            </h5>
+                    <div className="panel h-full w-full">
+                        <div className="mb-5 flex items-center justify-between">
+                            <h5 className="text-lg font-semibold dark:text-white-light">Recent Reservations</h5>
                         </div>
-                        <div className="rounded-lg bg-transparent">
-                            <>
-                                {isMounted ? (
-                                    <ReactApexChart series={totalOrders.series} options={totalOrders.options} type="area" height={290} width={'100%'} />
-                                ) : (
-                                    <div className="grid min-h-[325px] place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
-                                        <span className="inline-flex h-5 w-5 animate-spin rounded-full  border-2 border-black !border-l-transparent dark:border-white"></span>
-                                    </div>
-                                )}
-                            </>
+                        <div className="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th className="ltr:rounded-l-md rtl:rounded-r-md">Queue</th>
+                                        <th>Reservations</th>
+                                        <th>Served</th>
+                                        <th>Total Time</th>
+                                        <th className="ltr:rounded-r-md rtl:rounded-l-md">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Queue #1</span>
+                                        </td>
+                                        <td>532</td>
+                                        <td>452</td>
+                                        <td>2 min</td>
+                                        <td>
+                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Paused</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Queue #2</span>
+                                        </td>
+                                        <td>235</td>
+                                        <td>189</td>
+                                        <td>3 min</td>
+                                        <td>
+                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Active</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Queue #3</span>
+                                        </td>
+                                        <td>198</td>
+                                        <td>157</td>
+                                        <td>3 min</td>
+                                        <td>
+                                            <span className="badge bg-danger shadow-md dark:group-hover:bg-transparent">Stopped</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Queue #4</span>
+                                        </td>
+                                        <td>155</td>
+                                        <td>102</td>
+                                        <td>20 min</td>
+                                        <td>
+                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Active</span>
+                                        </td>
+                                    </tr>
+                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                        <td className="min-w-[150px] text-black dark:text-white">
+                                            <span className="whitespace-nowrap">Queue #5</span>
+                                        </td>
+                                        <td>122</td>
+                                        <td>89</td>
+                                        <td>7 min</td>
+                                        <td>
+                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Paused</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <div className="panel h-full w-full">
-                    <div className="mb-5 flex items-center justify-between">
-                        <h5 className="text-lg font-semibold dark:text-white-light">Recent Reservations</h5>
-                    </div>
-                    <div className="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th className="ltr:rounded-l-md rtl:rounded-r-md">First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
-                                    <th>Wait Time</th>
-                                    <th className="ltr:rounded-r-md rtl:rounded-l-md">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="min-w-[150px] text-black dark:text-white">
-                                        <span className="whitespace-nowrap">John</span>
-                                    </td>
-                                    <td>Doe</td>
-                                    <td>john.doe@example.com</td>
-                                    <td>15 min</td>
-                                    <td>
-                                        <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
-                                    </td>
-                                </tr>
-                                <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="min-w-[150px] text-black dark:text-white">
-                                        <span className="whitespace-nowrap">Jane</span>
-                                    </td>
-                                    <td>Smith</td>
-                                    <td>jane.smith@example.com</td>
-                                    <td>5 min</td>
-                                    <td>
-                                        <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Served</span>
-                                    </td>
-                                </tr>
-                                <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="min-w-[150px] text-black dark:text-white">
-                                        <span className="whitespace-nowrap">Emily</span>
-                                    </td>
-                                    <td>Johnson</td>
-                                    <td>emily.johnson@example.com</td>
-                                    <td>20 min</td>
-                                    <td>
-                                        <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
-                                    </td>
-                                </tr>
-                                <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="min-w-[150px] text-black dark:text-white">
-                                        <span className="whitespace-nowrap">Michael</span>
-                                    </td>
-                                    <td>Brown</td>
-                                    <td>michael.brown@example.com</td>
-                                    <td>10 min</td>
-                                    <td>
-                                        <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Served</span>
-                                    </td>
-                                </tr>
-                                <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                    <td className="min-w-[150px] text-black dark:text-white">
-                                        <span className="whitespace-nowrap">Sarah</span>
-                                    </td>
-                                    <td>Wilson</td>
-                                    <td>sarah.wilson@example.com</td>
-                                    <td>12 min</td>
-                                    <td>
-                                        <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
     );

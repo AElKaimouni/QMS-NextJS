@@ -69,7 +69,7 @@ export const QueueCard = ({ queue, triggerDeleteConfimation }: QueueCardProps) =
                 </div>
                 <p className="font-extralight text-gray-400">{queue.description}</p>
                 <div className="mt-5 flex items-center justify-between">
-                    <h5 className="text-xl font-semibold text-[#3b3f5c] dark:text-white-light">{queue.length}</h5>
+                    <span className="text-sm  text-[#3b3f5c] dark:text-white-light">Total Reservations: <span className='font-semibold'>{queue.length}</span></span>
                     <div className="flex items-center gap-2">
                         <span className={`badge ${queueStatusClasses[queue.status] ?? 'bg-queueStatus-created'}`}>{queue.status ?? 'CREATED'}</span>
                     </div>

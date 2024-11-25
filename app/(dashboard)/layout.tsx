@@ -12,18 +12,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Overlay />
 
             <MainContainer>
-                {/* BEGIN SIDEBAR */}
-                {/* <Sidebar /> */}
-                {/* END SIDEBAR */}
+
 
                 <div className="main-content flex min-h-[100dvh] flex-col">
-                    {/* BEGIN TOP NAVBAR */}
                     <Header />
-                    {/* END TOP NAVBAR */}
 
-                    {/* BEGIN CONTENT AREA */}
                     <ContentAnimation>{children}</ContentAnimation>
-                    {/* END CONTENT AREA */}
 
                     <Portals />
 

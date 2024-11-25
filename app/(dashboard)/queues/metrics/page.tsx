@@ -33,6 +33,152 @@ export default function WorkspaceMetricsPage() {
     const isDark = useTypedSelector((state) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const isRtl = useTypedSelector((state) => state.themeConfig.rtlClass) === 'rtl';
 
+    // Queue Traffic Chart
+    const queueTrafficChart: any = {
+        series: [
+            {
+                name: 'Queue A',
+                data: [45, 55, 75, 85, 65, 70, 85, 60, 55, 70, 50, 65],
+            }
+        ],
+        options: {
+            chart: {
+                height: 325,
+                type: 'area',
+                fontFamily: 'Nunito, sans-serif',
+                zoom: {
+                    enabled: false,
+                },
+                toolbar: {
+                    show: false,
+                },
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            stroke: {
+                show: true,
+                curve: 'smooth',
+                width: 2,
+                lineCap: 'square',
+            },
+            dropShadow: {
+                enabled: true,
+                opacity: 0.2,
+                blur: 10,
+                left: -7,
+                top: 22,
+            },
+            colors: isDark ? ['#2196F3', '#e7515a'] : ['#1B55E2', '#E7515A'],
+            markers: {
+                discrete: [
+                    {
+                        seriesIndex: 0,
+                        dataPointIndex: 6,
+                        fillColor: '#1B55E2',
+                        strokeColor: 'transparent',
+                        size: 7,
+                    },
+                    {
+                        seriesIndex: 1,
+                        dataPointIndex: 5,
+                        fillColor: '#E7515A',
+                        strokeColor: 'transparent',
+                        size: 7,
+                    },
+                ],
+            },
+            labels: ['9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM'],
+            xaxis: {
+                axisBorder: {
+                    show: false,
+                },
+                axisTicks: {
+                    show: false,
+                },
+                crosshairs: {
+                    show: true,
+                },
+                labels: {
+                    offsetX: isRtl ? 2 : 0,
+                    offsetY: 5,
+                    style: {
+                        fontSize: '12px',
+                        cssClass: 'apexcharts-xaxis-title',
+                    },
+                },
+            },
+            yaxis: {
+                tickAmount: 7,
+                labels: {
+                    formatter: (value: number) => {
+                        return value + ' people';
+                    },
+                    offsetX: isRtl ? -30 : -10,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '12px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                },
+                opposite: isRtl ? true : false,
+            },
+            grid: {
+                borderColor: isDark ? '#191E3A' : '#E0E6ED',
+                strokeDashArray: 5,
+                xaxis: {
+                    lines: {
+                        show: false,
+                    },
+                },
+                yaxis: {
+                    lines: {
+                        show: true,
+                    },
+                },
+                padding: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                },
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                fontSize: '16px',
+                markers: {
+                    width: 10,
+                    height: 10,
+                    offsetX: -2,
+                },
+                itemMargin: {
+                    horizontal: 10,
+                    vertical: 5,
+                },
+            },
+            tooltip: {
+                marker: {
+                    show: true,
+                },
+                x: {
+                    show: false,
+                },
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    inverseColors: !1,
+                    opacityFrom: isDark ? 0.19 : 0.28,
+                    opacityTo: 0.05,
+                    stops: isDark ? [100, 100] : [45, 100],
+                },
+            },
+        },
+    };
+
+
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
         setIsMounted(true);
@@ -116,32 +262,35 @@ export default function WorkspaceMetricsPage() {
     return (
         <div className="flex min-h-[calc(100dvh-6rem)] w-full justify-center p-4">
             <div className="flex w-full max-w-screen-xl flex-col space-y-4">
-                <ul className="flex space-x-2 sm:text-lg rtl:space-x-reverse">
-                    <li>
-                        <Link href="/" className="text-primary hover:underline">
-                            Dashboard
-                        </Link>
-                    </li>
-                    <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                        <Link href="/queues" className="text-primary hover:underline">
-                            Queues
-                        </Link>
-                    </li>
-                    <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                        <span>Metrics</span>
-                    </li>
-                </ul>
+                <div className='flex flex-col lg:flex-row'>
+                    <ul className="flex grow space-x-2 sm:text-lg rtl:space-x-reverse">
+                        <li>
+                            <Link href="/" className="text-primary hover:underline">
+                                Dashboard
+                            </Link>
+                        </li>
+                        <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                            <Link href="/queues" className="text-primary hover:underline">
+                                Queues
+                            </Link>
+                        </li>
+                        <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                            <span>Metrics</span>
+                        </li>
+                    </ul>
 
-                <Select
-                    className="w-full"
-                    // @ts-ignore
-                    options={selectOptionsQueues}
-                    placeholder={t('Select a Queue')}
-                    // value={queues.find((queue) => String(queue.id) === queueId)}
-                    onChange={handleQueueChange}
-                    isSearchable={false}
-                    isDisabled={loadingWorkspaces}
-                />
+                    <Select
+                        className="w-full lg:w-[200px]"
+                        // @ts-ignore
+                        options={selectOptionsQueues}
+                        placeholder={t('Select a Queue')}
+                        // value={queues.find((queue) => String(queue.id) === queueId)}
+                        onChange={handleQueueChange}
+                        isSearchable={false}
+                        isDisabled={loadingWorkspaces}
+                    />
+                </div>
+
                 <div className="mb-6 grid grid-cols-1 gap-6 text-white sm:grid-cols-2 xl:grid-cols-4">
                     {/* Queue Length */}
                     <div className="panel bg-gradient-to-r from-cyan-500 to-cyan-400">
@@ -271,9 +420,38 @@ export default function WorkspaceMetricsPage() {
                         </div>
                     </div>
                 </div>
-                <div className="grid h-[50vh] grid-cols-1 sm:grid-cols-2">
-                    <div>{isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} type="bar" height="100%" width="100%" />}</div>
-                    <div>{isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} type="bar" height="100%" width="100%" />}</div>
+                <div className="panel h-full xl:col-span-2">
+                        <div className="mb-5 flex items-center justify-between dark:text-white-light">
+                        <h5 className="text-lg font-semibold">Queue Traffic</h5>
+                    </div>
+                    <p className="text-lg dark:text-white-light/90">
+                        Total People in Queue <span className="ml-2 text-primary">157</span>
+                    </p>
+                    <div className="relative">
+                        <div className="rounded-lg bg-white dark:bg-black">
+                            {isMounted ? (
+                                <ReactApexChart series={queueTrafficChart.series} options={queueTrafficChart.options} type="area" height={325} width={'100%'} />
+                            ) : (
+                                <div className="grid min-h-[325px] place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
+                                    <span className="inline-flex h-5 w-5 animate-spin rounded-full border-2 border-black !border-l-transparent dark:border-white"></span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="panel h-full p-0 ">
+                        <div className="mb-5 flex items-start justify-between border-b border-white-light p-5  dark:border-[#1b2e4b] dark:text-white-light">
+                            <h5 className="text-lg font-semibold ">Total Reservations & Served People</h5>
+                        </div>
+                        {isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} type="bar" />}
+                    </div>
+                    <div className="panel h-full p-0">
+                        <div className="mb-5 flex items-start justify-between border-b border-white-light p-5  dark:border-[#1b2e4b] dark:text-white-light">
+                            <h5 className="text-lg font-semibold ">Wait Time & Serve Time</h5>
+                        </div>
+                        {isMounted && <ReactApexChart series={columnChart.series} options={columnChart.options} type="bar" />}
+                    </div>
                 </div>
             </div>
         </div>

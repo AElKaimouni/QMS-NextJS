@@ -166,12 +166,12 @@ const Header = () => {
     };
 
     return (
-        <header className={`z-40 h-24 ${themeConfig.semidark && themeConfig.menu === 'horizontal' ? 'dark' : ''}`}>
+        <header className={`z-40 ${themeConfig.theme && themeConfig.menu === 'horizontal' ? 'dark' : ''}`}>
             <div className="shadow-sm">
                 <div className="relative flex w-full items-center justify-between bg-white px-5 py-2.5 dark:bg-black">
                     <div className="horizontal-logo flex items-center justify-between lg:hidden ltr:mr-2 rtl:ml-2">
                         <Link href="/" className="main-logo flex shrink-0 items-center">
-                            <img className="inline w-24 ltr:-ml-1 rtl:-mr-1" src="/assets/images/quickq.png" alt="logo" />
+                            <img className="inline w-36 ltr:-ml-1 rtl:-mr-1" src="/assets/images/quickq.png" alt="logo" />
                             {/* <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 dark:text-white-light md:inline ltr:ml-1.5 rtl:mr-1.5">QuickQ</span> */}
                         </Link>
                     </div>
@@ -184,7 +184,7 @@ const Header = () => {
                                         <Link href={m.link} type="button" className="nav-link">
                                             <div className="flex items-center">
                                                 <m.Icon className="size-5 shrink-0 dark:!text-white-dark" />
-                                                <span className="px-1 text-lg/none text-white">{t(m.title)}</span>
+                                                <span className="px-1 text-lg text-white-dark">{t(m.title)}</span>
                                             </div>
                                         </Link>
                                     </li>
@@ -193,60 +193,33 @@ const Header = () => {
                         </div>
                     </div>
                     <div className="flex space-x-1">
-                        <div>
+                        <div className='mr-2'>
                             {themeConfig.theme === 'light' ? (
                                 <button
-                                    className={`${themeConfig.theme === 'light' && 'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary'}`}
+                                    className={`flex items-center p-2 rounded-full bg-dark/40 text-white-dark hover:text-primary  hover:bg-dark/60`}
                                     onClick={() => dispatch(toggleTheme('dark'))}
                                 >
-                                    <IconSun />
+                                    <IconSun className='w-7 h-7' />
                                 </button>
                             ) : (
                                 ''
                             )}
                             {themeConfig.theme === 'dark' && (
                                 <button
-                                    className={`${themeConfig.theme === 'dark' && 'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary'}`}
+                                    className={`flex items-center p-2 rounded-full bg-dark/40 text-white-dark hover:text-primary  hover:bg-dark/60`}
                                     onClick={() => dispatch(toggleTheme('light'))}
                                 >
-                                    <IconMoon />
+                                    <IconMoon className='w-7 h-7' />
                                 </button>
                             )}
                         </div>
-                        {/* <div className="dropdown shrink-0">
-                            <Dropdown
-                                offset={[0, 8]}
-                                placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
-                                button={i18n.language && <img className="h-5 w-5 rounded-full object-cover" src={`/assets/images/flags/${i18n.language.toUpperCase()}.svg`} alt="flag" />}
-                            >
-                                <ul className="grid w-[280px] grid-cols-2 gap-2 !px-2 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
-                                    {themeConfig.languageList.map((item: any) => {
-                                        return (
-                                            <li key={item.code}>
-                                                <button
-                                                    type="button"
-                                                    className={`flex w-full hover:text-primary ${i18n.language === item.code ? 'bg-primary/10 text-primary' : ''}`}
-                                                    onClick={() => {
-                                                        i18n.changeLanguage(item.code);
-                                                        setLocale(item.code);
-                                                    }}
-                                                >
-                                                    <img src={`/assets/images/flags/${item.code.toUpperCase()}.svg`} alt="flag" className="h-5 w-5 rounded-full object-cover" />
-                                                    <span className="ltr:ml-3 rtl:mr-3">{item.name}</span>
-                                                </button>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </Dropdown>
-                        </div> */}
+    
 
                         <div className="dropdown !z-50 flex shrink-0">
                             <Dropdown
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
                                 btnClassName="relative group block"
-                                button={<img src="/assets/images/user.png" className="!z-50 h-9 w-9 rounded-full bg-gray-100 object-cover saturate-50 group-hover:saturate-100" />}
+                                button={<img src="/assets/images/user.png" className="!z-50 w-11 h-11 rounded-full bg-gray-100 object-cover saturate-50 group-hover:saturate-100" />}
                             >
                                 <ul className="w-[230px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                                     <li>
