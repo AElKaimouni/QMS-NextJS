@@ -64,7 +64,7 @@ module.exports = {
                 queueStatus: {
                     created: '#4361ee', // Light Blue
                     active: '#34D399', // Green
-                    paused: '#db9d00', // Orange
+                    paused: '#db9d01', // Orange
                     closed: '#CEDBF7', // Dark Gray
                     deleted: '#EF4444', // Red
                 },
