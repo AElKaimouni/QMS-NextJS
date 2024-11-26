@@ -67,6 +67,7 @@ export const {
     useCreateQueueMutation,
     useConsultQueueQuery,
     useGetAllQueuesQuery,
+    useLazyGetAllQueuesQuery,
     useCallNextInQueueMutation,
     useStartQueueMutation,
     useCloseQueueMutation,

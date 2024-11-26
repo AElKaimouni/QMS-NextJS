@@ -42,7 +42,7 @@ export const QueueCard = ({ queue, triggerDeleteConfimation }: QueueCardProps) =
             passHref
             className="relative flex w-full cursor-pointer flex-col flex-wrap rounded-lg border-[#e0e6ed] bg-white p-1 shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none sm:max-w-xs"
         >
-            <div className="relative z-10 px-6 py-7">
+            <div className="relative px-6 py-7">
                 <div className="flex justify-between">
                     <div className="mb-5 inline-block rounded-full bg-[#D7E8FF] p-2 text-[#2673DD]">
                         <MdOutlineTimer className="size-6" />

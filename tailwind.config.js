@@ -15,7 +15,6 @@ module.exports = {
             center: true,
         },
         extend: {
-            
             colors: {
                 primary: {
                     DEFAULT: '#4361ee',
@@ -65,8 +64,8 @@ module.exports = {
                 queueStatus: {
                     created: '#4361ee', // Light Blue
                     active: '#34D399', // Green
-                    paused: '#F59E0B', // Orange
-                    closed: '#6B7280', // Dark Gray
+                    paused: '#db9d00', // Orange
+                    closed: '#CEDBF7', // Dark Gray
                     deleted: '#EF4444', // Red
                 },
             },

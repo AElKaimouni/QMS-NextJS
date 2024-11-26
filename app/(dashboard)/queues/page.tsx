@@ -1,11 +1,5 @@
-'use client';
-
-import IconPlus from '@/components/icon/icon-plus';
 import QueuesInWorkspace from '@/components/QueuesInWorkspace';
-import { getTranslation } from '@/i18n';
 import Link from 'next/link';
-
-const { t } = getTranslation();
 
 const Workspaces = () => {
     const wid = '1';
@@ -22,13 +16,10 @@ const Workspaces = () => {
                         <span>Queues</span>
                     </li>
                 </ul>
-                <Link href={`/queues/new`} className="btn btn-primary ml-auto mt-2 sm:absolute sm:right-10">
-                    <IconPlus className="mr-2 text-xl" />
-                    {t('Create Queue')}
-                </Link>
+                
             </div>
-            <div className="flex w-full flex-col gap-4 sm:flex-row sm:flex-wrap">
-                <QueuesInWorkspace wid={wid} />
+            <div className="flex w-full flex-col mt-2 gap-4 sm:flex-row sm:flex-wrap">
+                <QueuesInWorkspace />
             </div>
         </div>
     );

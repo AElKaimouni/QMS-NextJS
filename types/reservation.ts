@@ -1,6 +1,6 @@
 import { Queue } from "./queue";
 
-enum ReservationStatus {
+export enum ReservationStatus {
     WAITING = 'WAITING',
     SERVING = 'SERVING',
     CANCELED = 'CANCELED',

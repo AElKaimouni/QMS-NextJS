@@ -14,6 +14,8 @@ import { FaPlus, FaPlay, FaPause, FaTrash } from 'react-icons/fa6';
 import { QueueStatus } from '@/types/queue';
 import { Dialog, Transition } from '@headlessui/react';
 import Link from 'next/link';
+import { BiInfoCircle } from 'react-icons/bi';
+import { ReservationStatus } from '@/types/reservation';
 
 interface QueueDetailsParams {
     params: {
@@ -37,13 +39,15 @@ const queueStatusClasses = {
     DELETED: 'bg-queueStatus-deleted',
 };
 
-const rtf = new Intl.RelativeTimeFormat('en', { style: 'short', numeric: 'auto' });
+// const rtf = new Intl.RelativeTimeFormat('en', { style: 'short', numeric: 'auto' });
 const { t, i18n } = getTranslation();
 
 export default function QueueServing({ params }: QueueDetailsParams) {
-    const { qid, wid } = params;
+    const { qid } = params;
 
     const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+    const [openQueueMemberInfoModal, setOpenQueueMemberInfoModal] = useState(false);
+    const [queueMemberInfo, setQueueMemberInfo] = useState<Reservation | null>();
 
     const { data: queue, isLoading: loadingQueue, error: errorQueue } = useGetQueueQuery({ id: qid });
 
@@ -154,6 +158,11 @@ export default function QueueServing({ params }: QueueDetailsParams) {
             .catch((error) => console.error(error));
     };
 
+    const handleShowQueueMemberInfo = (qmi: Reservation) => {
+        setQueueMemberInfo(qmi);
+        setOpenQueueMemberInfoModal(true);
+    };
+
     return (
         <div className="md:px-6">
             <ul className="mb-4 ml-5 flex space-x-2 md:text-lg rtl:space-x-reverse">
@@ -201,11 +210,11 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                     </Tab.List>
                 </div>
 
-                <div className={`mx-6 flex items-center rounded ${queueStatusClasses[queue?.status ?? QueueStatus.CREATED]} p-3.5 dark:bg-primary-dark-light`}>
-                    <span className="ltr:pl-2 rtl:pr-2">
-                        {t('Queue status')}
+                <div className="flex w-full justify-center">
+                    <div className={`mx-6 flex max-w-sm items-center justify-center rounded ${queueStatusClasses[queue?.status ?? QueueStatus.CREATED]} p-3.5 dark:bg-primary-dark-light`}>
+                        <span className="ltr:pl-2 rtl:pr-2">{t('Queue status: ')}</span>
                         <strong className="ltr:ml-1 rtl:mr-1">{queue?.status}</strong>
-                    </span>
+                    </div>
                 </div>
                 <div className="my-6 grid grid-cols-2 justify-center gap-4 px-6 md:grid-cols-4">
                     <button
@@ -239,6 +248,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                 </div>
 
                 <ComfirmationModal isOpen={openConfirmationModal} onClose={() => setOpenConfirmationModal(false)} onConfirm={handleDeleteQueue} />
+                {queueMemberInfo && <QueueMemberDetailsModal isOpen={openQueueMemberInfoModal} onClose={() => setOpenQueueMemberInfoModal(false)} reservation={queueMemberInfo} />}
 
                 <Tab.Panels className="p-6 pt-0">
                     <Tab.Panel>
@@ -251,7 +261,12 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                                     <div className="flex flex-col justify-center space-y-4">
                                         {waitList.map((waiting) => (
                                             <div key={waiting.id} className="rounded-xl border border-[#e0e6ed] bg-white p-4 shadow dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
-                                                <p className="text-lg font-medium">{`${waiting.position}: ${waiting.email}`}</p>
+                                                <div className="flex w-full items-center justify-between">
+                                                    <p className="text-lg font-medium">{`${waiting.position}: ${waiting.email}`}</p>
+                                                    <button onClick={() => handleShowQueueMemberInfo(waiting)}>
+                                                        <BiInfoCircle className="h-6 w-6 text-gray-600" />
+                                                    </button>
+                                                </div>
                                                 <p className="mt-2 text-sm text-gray-600">
                                                     {t('Joined')} {getRelativeTimeString(new Date(Date.parse(waiting.joinAt)), i18n.language)}
                                                 </p>
@@ -276,7 +291,12 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                                         <>
                                             {currentServingList.map((currentServing) => (
                                                 <div className="rounded-lg bg-gray-50 p-4 dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
-                                                    <p className="text-lg font-medium">{currentServing?.email}</p>
+                                                    <div className="flex w-full items-center justify-between">
+                                                        <p className="text-lg font-medium">{currentServing?.email}</p>
+                                                        <button onClick={() => handleShowQueueMemberInfo(currentServing)}>
+                                                            <BiInfoCircle className="h-6 w-6 text-gray-600" />
+                                                        </button>
+                                                    </div>
                                                     <p className="mt-2 text-sm text-gray-600">
                                                         {t('Serving from')}: {getRelativeTimeString(new Date(Date.parse(currentServing?.calledAt ?? '')), i18n.language)}
                                                     </p>
@@ -295,7 +315,7 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                                 </div>
                             </div>
 
-                            <div className="relative hidden md:inline w-full dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none">
+                            <div className="relative hidden w-full dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none md:inline">
                                 <div className="relative z-10 py-7">
                                     <h2 className="mb-4 text-xl font-semibold">
                                         {t('Served')} ({servedList.length ?? '0'})
@@ -305,9 +325,14 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                                             <>
                                                 {servedList.map((served) => (
                                                     <div key={served.id} className="rounded-xl border border-[#e0e6ed] bg-white p-4 shadow dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
-                                                        <p className="text-lg font-medium">
-                                                            {served.position}: {served.email}
-                                                        </p>
+                                                        <div className="flex w-full items-center justify-between">
+                                                            <p className="text-lg font-medium">
+                                                                {served.position}: {served.email}
+                                                            </p>
+                                                            <button onClick={() => handleShowQueueMemberInfo(served)}>
+                                                                <BiInfoCircle className="h-6 w-6 text-gray-600" />
+                                                            </button>
+                                                        </div>
                                                         <p className="mt-2 text-right text-xs text-gray-600">
                                                             {t('Time')}:{' '}
                                                             {new Date(Date.parse(served?.servedAt ?? '')).toLocaleString(navigator.language, {
@@ -342,9 +367,14 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                                             <>
                                                 {servedList.map((served) => (
                                                     <div key={served.id} className="rounded-xl border border-[#e0e6ed] bg-white p-4 shadow dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
-                                                        <p className="text-lg font-medium">
-                                                            {served.position}: {served.email}
-                                                        </p>
+                                                        <div className="flex w-full items-center justify-between">
+                                                            <p className="text-lg font-medium">
+                                                                {served.position}: {served.email}
+                                                            </p>
+                                                            <button onClick={() => handleShowQueueMemberInfo(served)}>
+                                                                <BiInfoCircle className="h-6 w-6 text-gray-600" />
+                                                            </button>
+                                                        </div>
                                                         <p className="mt-2 text-right text-xs text-gray-600">
                                                             {t('Time')}:{' '}
                                                             {new Date(Date.parse(served?.servedAt ?? '')).toLocaleString(navigator.language, {
@@ -408,6 +438,124 @@ const ComfirmationModal = ({ isOpen, onClose, onConfirm }: ConfirmationModalProp
                                         </button>
                                         <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={onConfirm}>
                                             {t('Confirm')}
+                                        </button>
+                                    </div>
+                                </div>
+                            </Dialog.Panel>
+                        </Transition.Child>
+                    </div>
+                </div>
+            </Dialog>
+        </Transition>
+    );
+};
+
+export interface Reservation {
+    id: string;
+    position: number;
+    status: ReservationStatus;
+    queueId: string;
+    email: string;
+    token: string;
+    joinAt: string;
+    calledAt?: string;
+    servedAt?: string;
+}
+
+const QueueMemberDetailsModal = ({ isOpen, onClose, reservation }: { isOpen: boolean; onClose: () => void; reservation: Reservation }) => {
+    const getStatusInfo = (status: ReservationStatus) => {
+        switch (status) {
+            case ReservationStatus.WAITING:
+                return { label: 'Waiting', colorClass: 'text-yellow-500' };
+            case ReservationStatus.SERVING:
+                return { label: 'Being Served', colorClass: 'text-blue-500' };
+            case ReservationStatus.CANCELED:
+                return { label: 'Canceled', colorClass: 'text-red-500' };
+            case ReservationStatus.SERVED:
+                return { label: 'Served', colorClass: 'text-green-500' };
+            case ReservationStatus.EXPIRED:
+                return { label: 'Expired', colorClass: 'text-gray-500' };
+            default:
+                return { label: 'Unknown', colorClass: 'text-gray-500' };
+        }
+    };
+
+    const statusInfo = getStatusInfo(reservation.status);
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" open={isOpen} onClose={onClose}>
+                <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                    <div className="fixed inset-0" />
+                </Transition.Child>
+                <div className="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60">
+                    <div className="flex min-h-screen items-center justify-center px-4">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                        >
+                            <Dialog.Panel as="div" className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                                <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                                    <h5 className="text-lg font-bold">Queue Member Details</h5>
+                                </div>
+                                <div className="p-5">
+                                    <div className="space-y-4">
+                                        {/* Reservation ID */}
+                                        <div>
+                                            <span className="font-semibold text-gray-700">Reservation ID:</span>
+                                            <p className="text-sm text-gray-900">{reservation.id}</p>
+                                        </div>
+
+                                        {/* Position in Queue */}
+                                        <div>
+                                            <span className="font-semibold text-gray-700">Position:</span>
+                                            <p className="text-sm text-gray-900">{reservation.position}</p>
+                                        </div>
+
+                                        {/* Status */}
+                                        <div>
+                                            <span className="font-semibold text-gray-700">Status:</span>
+                                            <p className={`text-sm ${statusInfo.colorClass}`}>{statusInfo.label}</p>
+                                        </div>
+
+                                        {/* Email */}
+                                        <div>
+                                            <span className="font-semibold text-gray-700">Email:</span>
+                                            <p className="text-sm text-gray-900">{reservation.email}</p>
+                                        </div>
+
+                                        {/* Join Time */}
+                                        <div>
+                                            <span className="font-semibold text-gray-700">Joined at:</span>
+                                            <p className="text-sm text-gray-900">{new Date(reservation.joinAt).toLocaleString()}</p>
+                                        </div>
+
+                                        {/* Called Time */}
+                                        {reservation.calledAt && (
+                                            <div>
+                                                <span className="font-semibold text-gray-700">Called at:</span>
+                                                <p className="text-sm text-gray-900">{new Date(reservation.calledAt).toLocaleString()}</p>
+                                            </div>
+                                        )}
+
+                                        {/* Served Time */}
+                                        {reservation.servedAt && (
+                                            <div>
+                                                <span className="font-semibold text-gray-700">Served at:</span>
+                                                <p className="text-sm text-gray-900">{new Date(reservation.servedAt).toLocaleString()}</p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Close Button */}
+                                    <div className="mt-4">
+                                        <button className="btn btn-primary w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700" onClick={onClose}>
+                                            Close
                                         </button>
                                     </div>
                                 </div>
