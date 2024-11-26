@@ -1,11 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { QueueCreation } from '@/types/queue';
+import { FieldType, QueueCreation } from '@/types/queue';
 
 const initialState: QueueCreation = {
     title: '',
     description: '',
     wid: '1',
-    config: {},
+    config: {
+        fields: [{
+            name: "email",
+            required: true,
+            type: FieldType.EMAIL
+        }]
+    },
 };
 ;
 
