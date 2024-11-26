@@ -5,9 +5,9 @@ import { addField, removeField } from '@/store/createQueueSlice';
 import { FieldType } from '@/types/queue';
 
 const allFields = [
+    { key: 'email', label: 'Email', type: FieldType.EMAIL },
     { key: 'first_name', label: 'First Name', type: FieldType.TEXT },
     { key: 'last_name', label: 'Last Name', type: FieldType.TEXT },
-    { key: 'email', label: 'Email', type: FieldType.EMAIL },
     { key: 'phone', label: 'Phone', type: FieldType.PHONE },
     { key: 'address', label: 'Address', type: FieldType.TEXT },
     { key: 'city', label: 'City', type: FieldType.TEXT },
@@ -53,6 +53,7 @@ export default function QueueClientFields() {
                                 className="form-checkbox" 
                                 onChange={(e) => handleOnChangeCheckbox(e, field)}
                                 checked={fields?.some(f => f.name === field.key)}
+                                disabled={field.key == "email"}
                             />
                             <span className="ml-2">{t(field.label)}</span>
                         </label>

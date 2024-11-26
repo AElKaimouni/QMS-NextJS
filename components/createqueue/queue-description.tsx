@@ -46,6 +46,7 @@ const QueueDescription = () => {
             placeholder: t('Enter a description'),
             spellChecker: false,
             hideIcons: ['guide', 'fullscreen', 'side-by-side', 'preview', 'image', 'table', 'horizontal-rule'],
+            maxHeight: "100px"
         } as Options;
     }, []);
 
