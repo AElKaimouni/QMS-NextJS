@@ -60,7 +60,7 @@ export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
     if (queues.length === 0) {
         return (
             <>
-                <p className="text-center text-gray-500">{t('No queues found. Please create a new queue')}</p>
+                <p className="text-center mt-6 text-gray-500">{t('No queues found. Please create a new queue')}</p>
             </>
         );
     }
