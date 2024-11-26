@@ -60,11 +60,7 @@ export default function QueuesInWorkspace({ wid }: QueuesInWorkspaceProps) {
     if (queues.length === 0) {
         return (
             <>
-                <Link href={`/queues/new`} className="btn btn-primary ml-auto">
-                    <IconPlus className="mr-2 text-xl" />
-                    {t('Create Queue')}
-                </Link>
-                {/* <p className="text-center text-gray-500">{t('No queues found. Please create a new queue')}</p> */}
+                <p className="text-center text-gray-500">{t('No queues found. Please create a new queue')}</p>
             </>
         );
     }
