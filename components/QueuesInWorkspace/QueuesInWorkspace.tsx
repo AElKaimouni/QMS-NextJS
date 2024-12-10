@@ -15,14 +15,16 @@ import { DeleteComfirmationModal } from '@/components/QueuesInWorkspace/DeleteCo
 
 const { t } = getTranslation();
 
+type WorkspaceOption = {
+    label: string;
+    value: string;
+};
+
 export default function QueuesInWorkspace() {
     const { data: workspaces, isLoading: loadingWorkspaces, error: errorWorkspaces } = useGetAllWorkspacesQuery(undefined);
 
     const [wid, setWid] = useState('1');
-
-    // const { data: queues = [], error, isLoading: isLoadingQueues, isFetching: isFetchingQueues } = useGetAllQueuesQuery({ wid });
     const [getQueuesOfWorkspace, { data: queues = [], error, isLoading: isLoadingQueues, isFetching: isFetchingQueues }] = useLazyGetAllQueuesQuery();
-    const [deleteQueue] = useDeleteQueueMutation();
 
     const errorQueue = error as { message: string };
 
@@ -30,6 +32,7 @@ export default function QueuesInWorkspace() {
     const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
     const [noCancelCreateWorkspace, setNoCancelCreateWorkspace] = useState(false);
     const [queueIdToDelete, setQueueIdToDelete] = useState('');
+    const [deleteQueue] = useDeleteQueueMutation();
 
     useEffect(() => {
         if (workspaces && workspaces.length === 0) {
@@ -39,8 +42,23 @@ export default function QueuesInWorkspace() {
     }, [workspaces]);
 
     useEffect(() => {
-        getQueuesOfWorkspace({ wid });
-    }, [wid]);
+        if (wid) {
+            getQueuesOfWorkspace({ wid });
+        }
+    }, [wid, getQueuesOfWorkspace]);
+
+    const selectOptionsWorkspaces = useMemo<WorkspaceOption[]>(() => {
+        return (
+            workspaces?.map((w) => ({
+                label: w.title,
+                value: w.id,
+            })) || []
+        );
+    }, [workspaces]);
+
+    const selectedWorkspace = useMemo<WorkspaceOption | null>(() => {
+        return selectOptionsWorkspaces.find((option) => option.value === wid) || null;
+    }, [selectOptionsWorkspaces, wid]);
 
     const triggerDeleteConfimation = (queueId: string) => {
         setQueueIdToDelete(queueId);
@@ -75,12 +93,11 @@ export default function QueuesInWorkspace() {
         setShowCreateWorkspaceModal(true);
     };
 
-    const selectOptionsWorkspaces = useMemo(() => {
-        return workspaces?.map((w) => ({
-            label: w.title,
-            value: w.id,
-        }));
-    }, [workspaces]);
+    const handleWorkspaceChange = (option: WorkspaceOption | null) => {
+        if (option) {
+            setWid(option.value);
+        }
+    };
 
     if (isLoadingQueues || isFetchingQueues) {
         return (
@@ -90,25 +107,15 @@ export default function QueuesInWorkspace() {
         );
     }
 
-    if (errorQueue) {
-        return (
-            <div>
-                <p className="text-danger">{errorQueue.message}</p>
-            </div>
-        );
-    }
-
     return (
         <>
             <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
-                <Select
+                <Select<WorkspaceOption>
                     className="w-full max-w-xl"
-                    // @ts-ignore
                     options={selectOptionsWorkspaces}
                     placeholder={t('Select a Workspace')}
-                    value={workspaces?.find((w) => w.id === wid)?.title}
-                    // @ts-ignore
-                    onChange={(newValue) => setWid(newValue?.value ?? '1')}
+                    value={selectedWorkspace}
+                    onChange={handleWorkspaceChange}
                     isSearchable={false}
                     isLoading={loadingWorkspaces}
                 />
@@ -133,4 +140,3 @@ export default function QueuesInWorkspace() {
         </>
     );
 }
-
