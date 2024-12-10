@@ -29,7 +29,7 @@ const { t } = getTranslation();
 
 export default function QueueDetails({ params }: QueueDetailsParams) {
     const { qid } = params;
-    const qrCodeValue = `http://${location.host}/${qid}`;
+    const qrCodeValue = `${location.origin}/${qid}`;
 
     const { data: queue, error, isLoading } = useGetQueueQuery({ id: qid });
 
@@ -54,8 +54,21 @@ export default function QueueDetails({ params }: QueueDetailsParams) {
         );
     }
 
-    const handleCopyLink = () => {
-        navigator.clipboard.writeText(qrCodeValue);
+    const handleCopyLink = async () => {
+        try {
+            // @ts-ignore
+            const permissionStatus = await navigator.permissions.query({ name: 'clipboard-write' });
+
+            if (permissionStatus.state === 'granted' || permissionStatus.state === 'prompt') {
+                // If permission is granted or needs prompting, try copying
+                await navigator.clipboard.writeText(qrCodeValue);
+                console.log('Text copied to clipboard!');
+            } else {
+                console.error('Clipboard permission denied');
+            }
+        } catch (err) {
+            console.error('Failed to access clipboard:', err);
+        }
     };
 
     const router = useRouter();

@@ -89,7 +89,7 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
                             minute: '2-digit',
                         })}
                     />
-                    <InfoItem label={t('Your estimated wait time')} value={Math.round((queue?.averageServeTime ?? 0) / 60) + ' minutes'} />
+                    <InfoItem label={t('Your estimated wait time')} value={Math.round((queue?.averageServeTime ?? 0) / 60000) + ' minutes'} />
                 </div>
 
                 <Link href={`/${qid}/reservations`}>
