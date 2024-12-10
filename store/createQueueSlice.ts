@@ -4,7 +4,7 @@ import { FieldType, QueueCreation } from '@/types/queue';
 const initialState: QueueCreation = {
     title: '',
     description: '',
-    wid: '1',
+    wid: '',
     config: {
         fields: [{
             name: "email",

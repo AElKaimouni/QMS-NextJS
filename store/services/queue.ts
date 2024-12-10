@@ -23,9 +23,9 @@ const queueSlice = api.injectEndpoints({
             query: ({ id }) => `/queue/${id}`,
             providesTags: ['queue'],
         }),
-        createQueue: build.mutation<Queue, QueueCreation>({
-            query: (body) => ({
-                url: `/queue?wid=${body.wid}`,
+        createQueue: build.mutation<Queue, { body: QueueCreation; wid: string }>({
+            query: ({ body, wid }) => ({
+                url: `/queue?wid=${wid}`,
                 method: 'POST',
                 body,
             }),
@@ -73,5 +73,5 @@ export const {
     useCloseQueueMutation,
     useDeleteQueueMutation,
     usePauseQueueMutation,
-    useLazyGetQueueQuery
+    useLazyGetQueueQuery,
 } = queueSlice;

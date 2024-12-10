@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
+import { updateWid } from '@/store/createQueueSlice';
+import { coloredToast } from './Toast';
 
 const steps = [
     { shortLabel: 'Description', fullLabel: 'Queue Description', component: QueueDescription },
@@ -29,6 +31,7 @@ export default function CreateQueueForm() {
     const searchParams = useSearchParams();
 
     const isEdit = searchParams.get('edit') === 'true';
+    const wid = searchParams.get('wid');
 
     const [getQueue, { isLoading: loadingQueueData }] = useLazyGetQueueQuery();
 
@@ -81,12 +84,16 @@ export default function CreateQueueForm() {
             alert('Description is required');
             return;
         }
-        createQueue(formData)
+        // @ts-ignore
+        createQueue({ body: formData, wid })
             .unwrap()
             .then((res) => {
                 router.push(`/queues/${res.id}/info`);
             })
-            .catch((e) => console.error(e));
+            .catch((e) => {
+                console.error(e);
+                coloredToast('danger', e?.data?.message);
+            });
     };
 
     const CurrentStepComponent = steps[currentStep].component;
@@ -105,7 +112,7 @@ export default function CreateQueueForm() {
 
     return (
         <>
-            <ul className="flex ml-6 space-x-2 text-lg rtl:space-x-reverse">
+            <ul className="ml-6 flex space-x-2 text-lg rtl:space-x-reverse">
                 <li>
                     <Link href="/" className="text-primary hover:underline">
                         Dashboard
@@ -115,7 +122,7 @@ export default function CreateQueueForm() {
                     <span>Queues</span>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>{isEdit ? "Edit" : "New"}</span>
+                    <span>{isEdit ? 'Edit' : 'New'}</span>
                 </li>
             </ul>
             <div className="flex h-full items-center justify-center">

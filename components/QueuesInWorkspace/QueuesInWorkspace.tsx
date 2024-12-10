@@ -23,7 +23,7 @@ type WorkspaceOption = {
 export default function QueuesInWorkspace() {
     const { data: workspaces, isLoading: loadingWorkspaces, error: errorWorkspaces } = useGetAllWorkspacesQuery(undefined);
 
-    const [wid, setWid] = useState('1');
+    const [wid, setWid] = useState('');
     const [getQueuesOfWorkspace, { data: queues = [], error, isLoading: isLoadingQueues, isFetching: isFetchingQueues }] = useLazyGetAllQueuesQuery();
 
     const errorQueue = error as { message: string };
@@ -110,7 +110,7 @@ export default function QueuesInWorkspace() {
     return (
         <>
             <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
-                <Select<WorkspaceOption>
+                <Select
                     className="w-full max-w-xl"
                     options={selectOptionsWorkspaces}
                     placeholder={t('Select a Workspace')}
@@ -123,10 +123,17 @@ export default function QueuesInWorkspace() {
                     <IconPlus className="mr-2 text-xl" />
                     {t('Create Workspace')}
                 </button>
-                <Link href={`/queues/new`} className="btn btn-primary w-full sm:max-w-56">
-                    <IconPlus className="mr-2 text-xl" />
-                    {t('Create Queue')}
-                </Link>
+                {!wid ? (
+                    <button className="btn btn-primary w-full sm:max-w-56" disabled={!wid}>
+                        <IconPlus className="mr-2 text-xl" />
+                        {t('Create Queue')}
+                    </button>
+                ) : (
+                    <Link href={`/queues/new?wid=${wid}`} className="btn btn-primary w-full sm:max-w-56">
+                        <IconPlus className="mr-2 text-xl" />
+                        {t('Create Queue')}
+                    </Link>
+                )}
             </div>
             <div className="mt-4 flex flex-wrap gap-4">
                 {queues
