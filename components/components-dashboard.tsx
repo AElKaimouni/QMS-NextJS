@@ -4,6 +4,8 @@ import { useTypedSelector } from '@/store';
 import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import IconEye from './icon/icon-eye';
+import { useGetDashboardSummaryQuery } from '@/store/services/api';
+import Loader from './loader';
 
 const ComponentsDashboard = () => {
     const isDark = useTypedSelector((state) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
@@ -13,18 +15,13 @@ const ComponentsDashboard = () => {
         setIsMounted(true);
     }, []);
 
-    // Queue Traffic Chart
+    const { data: dashboardSummary, isLoading, isFetching, isError } = useGetDashboardSummaryQuery();
+
     const queueTrafficChart: any = {
-        series: [
-            {
-                name: 'Queue A',
-                data: [45, 55, 75, 85, 65, 70, 85, 60, 55, 70, 50, 65],
-            },
-            {
-                name: 'Queue B',
-                data: [30, 45, 35, 50, 40, 55, 40, 45, 40, 50, 45, 55],
-            },
-        ],
+        series: dashboardSummary?.queues_performance.map((queue) => ({
+            name: queue.title,
+            data: [queue.total_reservations, queue.served_reservations], // Example usage
+        })),
         options: {
             chart: {
                 height: 325,
@@ -93,10 +90,11 @@ const ComponentsDashboard = () => {
                 },
             },
             yaxis: {
-                tickAmount: 7,
+                // Calculate tickAmount based on max value in the data
+                tickAmount: dashboardSummary?.hourly_reservations ? Math.min(7, Math.max(...dashboardSummary.hourly_reservations.map((hr) => hr.reservations_count)) + 1) : 7,
                 labels: {
                     formatter: (value: number) => {
-                        return value + ' people';
+                        return Math.round(value) + ' people';
                     },
                     offsetX: isRtl ? -30 : -10,
                     offsetY: 0,
@@ -162,9 +160,8 @@ const ComponentsDashboard = () => {
         },
     };
 
-    // Queue Distribution
     const queueDistribution: any = {
-        series: [45, 30, 25],
+        series: dashboardSummary?.queues_performance ? dashboardSummary.queues_performance.map((q) => q.total_reservations) : [],
         options: {
             chart: {
                 type: 'donut',
@@ -244,141 +241,13 @@ const ComponentsDashboard = () => {
         },
     };
 
-    // Waiting Times
-    const waitingTimes: any = {
-        series: [
-            {
-                name: 'Current',
-                data: [15, 20, 12, 25, 18, 21, 14],
-            },
-            {
-                name: 'Last Week',
-                data: [12, 18, 14, 15, 17, 19, 16],
-            },
-        ],
-        options: {
-            chart: {
-                height: 160,
-                type: 'bar',
-                fontFamily: 'Nunito, sans-serif',
-                toolbar: {
-                    show: false,
-                },
-                stacked: true,
-                stackType: '100%',
-            },
-            dataLabels: {
-                enabled: false,
-            },
-            stroke: {
-                show: true,
-                width: 1,
-            },
-            colors: ['#e2a03f', '#e0e6ed'],
-            responsive: [
-                {
-                    breakpoint: 480,
-                    options: {
-                        legend: {
-                            position: 'bottom',
-                            offsetX: -10,
-                            offsetY: 0,
-                        },
-                    },
-                },
-            ],
-            xaxis: {
-                labels: {
-                    show: false,
-                },
-                categories: ['Queue A', 'Queue B', 'Queue C', 'Queue D', 'Queue E', 'Queue F', 'Queue G'],
-            },
-            yaxis: {
-                show: false,
-            },
-            fill: {
-                opacity: 1,
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '25%',
-                },
-            },
-            legend: {
-                show: false,
-            },
-            grid: {
-                show: false,
-                xaxis: {
-                    lines: {
-                        show: false,
-                    },
-                },
-                padding: {
-                    top: 10,
-                    right: -20,
-                    bottom: -20,
-                    left: -20,
-                },
-            },
-        },
-    };
-
-    //Total Orders
-    const totalOrders: any = {
-        series: [
-            {
-                name: 'Sales',
-                data: [28, 40, 36, 52, 38, 60, 38, 52, 36, 40],
-            },
-        ],
-        options: {
-            chart: {
-                height: 290,
-                type: 'area',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: isDark ? ['#00ab55'] : ['#00ab55'],
-            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-            yaxis: {
-                min: 0,
-                show: false,
-            },
-            grid: {
-                padding: {
-                    top: 125,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
-                },
-            },
-            fill: {
-                opacity: 1,
-                type: 'gradient',
-                gradient: {
-                    type: 'vertical',
-                    shadeIntensity: 1,
-                    inverseColors: !1,
-                    opacityFrom: 0.3,
-                    opacityTo: 0.05,
-                    stops: [100, 100],
-                },
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-            },
-        },
-    };
+    if (isLoading || isFetching || !dashboardSummary) {
+        return (
+            <div className="flex items-center justify-center p-5">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -390,42 +259,39 @@ const ComponentsDashboard = () => {
                             <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Total Queue</div>
                         </div>
                         <div className="mt-5 flex items-center">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 7 </div>
-                            <div className="badge bg-white/30">+ 8% </div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3">{dashboardSummary.widgets.total_queues}</div>
                         </div>
                         <div className="mt-5 flex items-center font-semibold">
                             <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                            Last Hour: 10
+                            Active: {dashboardSummary.widgets.active_queues}
                         </div>
                     </div>
 
-                    {/* Average Wait Time */}
+                    {/* Active Queues */}
                     <div className="panel bg-gradient-to-r from-violet-500 to-violet-400">
                         <div className="flex justify-between">
                             <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Active Queues</div>
                         </div>
                         <div className="mt-5 flex items-center">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 3 </div>
-                            <div className="badge bg-white/30">- 5% </div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3">{dashboardSummary.widgets.active_queues}</div>
                         </div>
                         <div className="mt-5 flex items-center font-semibold">
                             <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                            Last Hour: 20 min
+                            Last Hour: {dashboardSummary.widgets.last_hour_total_reservations}
                         </div>
                     </div>
 
-                    {/* Active Queues */}
+                    {/* Total Reservations */}
                     <div className="panel bg-gradient-to-r from-blue-500 to-blue-400">
                         <div className="flex justify-between">
                             <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Total Reservations</div>
                         </div>
                         <div className="mt-5 flex items-center">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 876 </div>
-                            <div className="badge bg-white/30">+ 2 </div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3">{dashboardSummary.widgets.total_reservations}</div>
                         </div>
                         <div className="mt-5 flex items-center font-semibold">
                             <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                            Last Hour: 3
+                            Yesterday: {dashboardSummary.widgets.yerserday_total_reservations}
                         </div>
                     </div>
 
@@ -435,22 +301,22 @@ const ComponentsDashboard = () => {
                             <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">Served Customers</div>
                         </div>
                         <div className="mt-5 flex items-center">
-                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 756 </div>
-                            <div className="badge bg-white/30">+ 10% </div>
+                            <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3">{dashboardSummary.widgets.total_served_customers}</div>
                         </div>
                         <div className="mt-5 flex items-center font-semibold">
                             <IconEye className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                            Last Hour: 45
+                            Last Hour: {dashboardSummary.widgets.last_hour_total_served_customers}
                         </div>
                     </div>
                 </div>
+
                 <div className="mb-6 grid gap-6 xl:grid-cols-3">
                     <div className="panel h-full xl:col-span-2">
                         <div className="mb-5 flex items-center justify-between dark:text-white-light">
                             <h5 className="text-lg font-semibold">Queue Traffic</h5>
                         </div>
                         <p className="text-lg dark:text-white-light/90">
-                            Total People in Queue <span className="ml-2 text-primary">157</span>
+                            Total Reservations <span className="ml-2 text-primary">{dashboardSummary.widgets.total_reservations}</span>
                         </p>
                         <div className="relative">
                             <div className="rounded-lg bg-white dark:bg-black">
@@ -483,8 +349,7 @@ const ComponentsDashboard = () => {
                     </div>
                 </div>
 
-                <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
-                    
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <div className="panel h-full w-full">
                         <div className="mb-5 flex items-center justify-between">
                             <h5 className="text-lg font-semibold dark:text-white-light">Recent Reservations</h5>
@@ -500,63 +365,32 @@ const ComponentsDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">John</span>
-                                        </td>
-                                        <td>Doe</td>
-                                        <td>john.doe@example.com</td>
-                                        <td>
-                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Jane</span>
-                                        </td>
-                                        <td>Smith</td>
-                                        <td>jane.smith@example.com</td>
-                                        <td>
-                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Served</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Emily</span>
-                                        </td>
-                                        <td>Johnson</td>
-                                        <td>emily.johnson@example.com</td>
-                                        <td>
-                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Michael</span>
-                                        </td>
-                                        <td>Brown</td>
-                                        <td>michael.brown@example.com</td>
-                                        <td>
-                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Served</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Sarah</span>
-                                        </td>
-                                        <td>Wilson</td>
-                                        <td>sarah.wilson@example.com</td>
-                                        <td>
-                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Waiting</span>
-                                        </td>
-                                    </tr>
+                                    {dashboardSummary.recent_reservations.map((reservation) => (
+                                        <tr key={reservation.id} className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                            <td className="min-w-[150px] text-black dark:text-white">
+                                                <span className="whitespace-nowrap">{reservation.info.first_name}</span>
+                                            </td>
+                                            <td>{reservation.info.last_name}</td>
+                                            <td>{reservation.info.email}</td>
+                                            <td>
+                                                <span
+                                                    className={`badge ${
+                                                        reservation.status === 'SERVING' ? 'bg-warning' : reservation.status === 'SERVED' ? 'bg-success' : 'bg-danger'
+                                                    } shadow-md dark:group-hover:bg-transparent`}
+                                                >
+                                                    {reservation.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
                     <div className="panel h-full w-full">
                         <div className="mb-5 flex items-center justify-between">
-                            <h5 className="text-lg font-semibold dark:text-white-light">Recent Reservations</h5>
+                            <h5 className="text-lg font-semibold dark:text-white-light">Queue Performance</h5>
                         </div>
                         <div className="table-responsive">
                             <table>
@@ -570,67 +404,30 @@ const ComponentsDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Queue #1</span>
-                                        </td>
-                                        <td>532</td>
-                                        <td>452</td>
-                                        <td>2 min</td>
-                                        <td>
-                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Paused</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Queue #2</span>
-                                        </td>
-                                        <td>235</td>
-                                        <td>189</td>
-                                        <td>3 min</td>
-                                        <td>
-                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Queue #3</span>
-                                        </td>
-                                        <td>198</td>
-                                        <td>157</td>
-                                        <td>3 min</td>
-                                        <td>
-                                            <span className="badge bg-danger shadow-md dark:group-hover:bg-transparent">Stopped</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Queue #4</span>
-                                        </td>
-                                        <td>155</td>
-                                        <td>102</td>
-                                        <td>20 min</td>
-                                        <td>
-                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Active</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <span className="whitespace-nowrap">Queue #5</span>
-                                        </td>
-                                        <td>122</td>
-                                        <td>89</td>
-                                        <td>7 min</td>
-                                        <td>
-                                            <span className="badge bg-warning shadow-md dark:group-hover:bg-transparent">Paused</span>
-                                        </td>
-                                    </tr>
+                                    {dashboardSummary.queues_performance.map((queue) => (
+                                        <tr key={queue.id} className="group text-white-dark hover:text-black dark:hover:text-white-light/90">
+                                            <td className="min-w-[150px] text-black dark:text-white">
+                                                <span className="whitespace-nowrap">{queue.title}</span>
+                                            </td>
+                                            <td>{queue.total_reservations}</td>
+                                            <td>{queue.served_reservations}</td>
+                                            <td>{queue.avg_total_time.toFixed(1)} min</td>
+                                            <td>
+                                                <span
+                                                    className={`badge ${
+                                                        queue.status === 'ACTIVE' ? 'bg-success' : queue.status === 'PAUSED' ? 'bg-warning' : 'bg-danger'
+                                                    } shadow-md dark:group-hover:bg-transparent`}
+                                                >
+                                                    {queue.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     );

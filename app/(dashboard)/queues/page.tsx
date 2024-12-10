@@ -1,4 +1,4 @@
-import QueuesInWorkspace from '@/components/QueuesInWorkspace';
+import QueuesInWorkspace from '@/components/QueuesInWorkspace/QueuesInWorkspace';
 import Link from 'next/link';
 
 const Workspaces = () => {

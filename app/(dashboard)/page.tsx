@@ -6,7 +6,7 @@ export default function Page() {
         <div className="p-4">
             <ul className="flex space-x-2 text-lg rtl:space-x-reverse">
                 <li>
-                    <Link href="#" className="text-primary hover:underline">
+                    <Link href="/" className="text-primary hover:underline">
                         Dashboard
                     </Link>
                     

@@ -15,7 +15,7 @@ import { QueueStatus } from '@/types/queue';
 import { Dialog, Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { BiInfoCircle } from 'react-icons/bi';
-import { ReservationStatus } from '@/types/reservation';
+import { Reservation, ReservationStatus } from '@/types/reservation';
 
 interface QueueDetailsParams {
     params: {
@@ -291,8 +291,19 @@ export default function QueueServing({ params }: QueueDetailsParams) {
                                         <>
                                             {currentServingList.map((currentServing) => (
                                                 <div className="rounded-lg bg-gray-50 p-4 dark:border-[#1b2e4b] dark:bg-[#15253a] dark:shadow-none">
-                                                    <div className="flex w-full items-center justify-between">
-                                                        <p className="text-lg font-medium">{currentServing?.email}</p>
+                                                    <div className="flex items-start justify-between">
+                                                        <div className="flex-1 space-y-3">
+                                                            {Object.entries(currentServing?.info || {}).map(([key, value]) => {
+                                                                const formattedKey = key.replaceAll('_', ' ');
+                                                                return (
+                                                                    <div key={key} className="flex flex-col">
+                                                                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{formattedKey}</span>
+                                                                        <span className="text-base font-semibold text-gray-900 dark:text-gray-100">{value as string}</span>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+
                                                         <button onClick={() => handleShowQueueMemberInfo(currentServing)}>
                                                             <BiInfoCircle className="h-6 w-6 text-gray-600" />
                                                         </button>
@@ -450,30 +461,18 @@ const ComfirmationModal = ({ isOpen, onClose, onConfirm }: ConfirmationModalProp
     );
 };
 
-export interface Reservation {
-    id: string;
-    position: number;
-    status: ReservationStatus;
-    queueId: string;
-    email: string;
-    token: string;
-    joinAt: string;
-    calledAt?: string;
-    servedAt?: string;
-}
-
 const QueueMemberDetailsModal = ({ isOpen, onClose, reservation }: { isOpen: boolean; onClose: () => void; reservation: Reservation }) => {
-    const getStatusInfo = (status: ReservationStatus) => {
+    const getStatusInfo = (status: string) => {
         switch (status) {
-            case ReservationStatus.WAITING:
+            case 'WAITING':
                 return { label: 'Waiting', colorClass: 'text-yellow-500' };
-            case ReservationStatus.SERVING:
+            case 'SERVING':
                 return { label: 'Being Served', colorClass: 'text-blue-500' };
-            case ReservationStatus.CANCELED:
+            case 'CANCELED':
                 return { label: 'Canceled', colorClass: 'text-red-500' };
-            case ReservationStatus.SERVED:
+            case 'SERVED':
                 return { label: 'Served', colorClass: 'text-green-500' };
-            case ReservationStatus.EXPIRED:
+            case 'EXPIRED':
                 return { label: 'Expired', colorClass: 'text-gray-500' };
             default:
                 return { label: 'Unknown', colorClass: 'text-gray-500' };
@@ -499,62 +498,83 @@ const QueueMemberDetailsModal = ({ isOpen, onClose, reservation }: { isOpen: boo
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel as="div" className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                            <Dialog.Panel className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                                 <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
-                                    <h5 className="text-lg font-bold">Queue Member Details</h5>
+                                    <Dialog.Title className="text-lg font-bold">Queue Member Details</Dialog.Title>
                                 </div>
+
                                 <div className="p-5">
                                     <div className="space-y-4">
                                         {/* Reservation ID */}
-                                        <div>
-                                            <span className="font-semibold text-gray-700">Reservation ID:</span>
-                                            <p className="text-sm text-gray-900">{reservation.id}</p>
+                                        <div className="flex items-start">
+                                            <span className="w-32 flex-shrink-0 font-semibold text-gray-700 dark:text-gray-300">Reservation ID:</span>
+                                            <p className="flex-1 text-lg text-gray-900 dark:text-gray-100">{reservation.id}</p>
                                         </div>
 
-                                        {/* Position in Queue */}
-                                        <div>
-                                            <span className="font-semibold text-gray-700">Position:</span>
-                                            <p className="text-sm text-gray-900">{reservation.position}</p>
+                                        {/* Position */}
+                                        <div className="flex items-start">
+                                            <span className="w-32 flex-shrink-0 font-semibold text-gray-700 dark:text-gray-300">Position:</span>
+                                            <p className="flex-1 text-lg text-gray-900 dark:text-gray-100">{reservation.position}</p>
                                         </div>
 
                                         {/* Status */}
-                                        <div>
-                                            <span className="font-semibold text-gray-700">Status:</span>
-                                            <p className={`text-sm ${statusInfo.colorClass}`}>{statusInfo.label}</p>
+                                        <div className="flex items-start">
+                                            <span className="w-32 flex-shrink-0 font-semibold text-gray-700 dark:text-gray-300">Status:</span>
+                                            <p className={`flex-1 text-lg ${statusInfo.colorClass}`}>{statusInfo.label}</p>
                                         </div>
 
                                         {/* Email */}
-                                        <div>
-                                            <span className="font-semibold text-gray-700">Email:</span>
-                                            <p className="text-sm text-gray-900">{reservation.email}</p>
+                                        <div className="flex items-start">
+                                            <span className="w-32 flex-shrink-0 font-semibold text-gray-700 dark:text-gray-300">Email:</span>
+                                            <p className="flex-1 text-lg text-gray-900 dark:text-gray-100">{reservation.email}</p>
                                         </div>
 
                                         {/* Join Time */}
-                                        <div>
-                                            <span className="font-semibold text-gray-700">Joined at:</span>
-                                            <p className="text-sm text-gray-900">{new Date(reservation.joinAt).toLocaleString()}</p>
+                                        <div className="flex items-start">
+                                            <span className="w-32 flex-shrink-0 font-semibold text-gray-700 dark:text-gray-300">Joined at:</span>
+                                            <p className="flex-1 text-lg text-gray-900 dark:text-gray-100">{new Date(reservation.joinAt).toLocaleString()}</p>
                                         </div>
 
                                         {/* Called Time */}
                                         {reservation.calledAt && (
-                                            <div>
-                                                <span className="font-semibold text-gray-700">Called at:</span>
-                                                <p className="text-sm text-gray-900">{new Date(reservation.calledAt).toLocaleString()}</p>
+                                            <div className="flex items-start">
+                                                <span className="w-32 flex-shrink-0 font-semibold text-gray-700 dark:text-gray-300">Called at:</span>
+                                                <p className="flex-1 text-lg text-gray-900 dark:text-gray-100">{new Date(reservation.calledAt).toLocaleString()}</p>
                                             </div>
                                         )}
 
                                         {/* Served Time */}
                                         {reservation.servedAt && (
-                                            <div>
-                                                <span className="font-semibold text-gray-700">Served at:</span>
-                                                <p className="text-sm text-gray-900">{new Date(reservation.servedAt).toLocaleString()}</p>
+                                            <div className="flex items-start">
+                                                <span className="w-32 flex-shrink-0 font-semibold text-gray-700 dark:text-gray-300">Served at:</span>
+                                                <p className="flex-1 text-lg text-gray-900 dark:text-gray-100">{new Date(reservation.servedAt).toLocaleString()}</p>
                                             </div>
+                                        )}
+
+                                        {/* Dynamic Info Fields */}
+                                        {reservation.info && Object.keys(reservation.info).length > 0 && (
+                                            <>
+                                                <div className="my-4 border-t border-gray-200 pt-4 dark:border-gray-700">
+                                                    <h6 className="mb-3 font-semibold text-gray-700 dark:text-gray-300">Customer Information</h6>
+                                                    <div className="space-y-4">
+                                                        {Object.entries(reservation.info).map(([key, value]) => (
+                                                            <div key={key} className="flex items-start">
+                                                                <span className="w-32 flex-shrink-0 font-semibold text-gray-700 dark:text-gray-300">{key.replaceAll('_', ' ')}:</span>
+                                                                <p className="flex-1 text-lg text-gray-900 dark:text-gray-100">{value as string}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </>
                                         )}
                                     </div>
 
                                     {/* Close Button */}
-                                    <div className="mt-4">
-                                        <button className="btn btn-primary w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700" onClick={onClose}>
+                                    <div className="mt-6">
+                                        <button
+                                            className="btn btn-primary w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                                            onClick={onClose}
+                                        >
                                             Close
                                         </button>
                                     </div>

@@ -1,16 +1,13 @@
 'use client';
 import IconLockDots from '@/components/icon/icon-lock-dots';
 import IconMail from '@/components/icon/icon-mail';
+import { setAuth } from '@/store/authSlice';
+import { useLoginMutation } from '@/store/services/user';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useAppDispatch } from '@/store';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
-import React from 'react';
-import { useLoginMutation } from '@/store/services/user';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { clearAuth, setAuth } from '@/store/authSlice';
-import { IRootState } from '@/store';
 
 // Define the validation schema with Zod
 const validationSchema = z.object({
@@ -21,7 +18,7 @@ const validationSchema = z.object({
 const ComponentsAuthLoginForm = () => {
     const router = useRouter();
     const [login, { data, isError, error, isLoading }] = useLoginMutation();
-    const dispatch = useDispatch();  
+    const dispatch = useAppDispatch();  
 
     // Initial values for the form
     const initialValues = {

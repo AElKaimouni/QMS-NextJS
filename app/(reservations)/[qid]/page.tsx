@@ -4,7 +4,6 @@ import { useConsultQueueQuery } from '@/store/services/queue';
 import { getTranslation } from '@/i18n';
 import Loader from '@/components/loader';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import NotFound from '@/app/not-found';
 
 type ReservationInfoProps = {
@@ -13,17 +12,26 @@ type ReservationInfoProps = {
 
 const { t } = getTranslation();
 
+const calculateExpectedArrivalTime = (averageServeTime?: number, queueLength?: number, counter?: number) => {
+    const now = new Date();
+    const waitTimeInSeconds = (averageServeTime ?? 0) * ((queueLength ?? 0) - (counter ?? 0));
+    return new Date(now.getTime() + waitTimeInSeconds * 1000);
+};
+
+const InfoItem = ({ label, value }: { label: string; value: React.ReactNode }) => (
+    <div className="text-center">
+        <div className="mb-1 text-gray-600">{label}</div>
+        <div className="text-xl font-semibold">{value}</div>
+    </div>
+);
+
 export default function ReservationInfo({ params }: ReservationInfoProps) {
     const { qid } = params;
 
-    const router = useRouter();
-
     const {
         data: queue,
-        error: errorQueue,
-        isError: isErrorQueue,
-        isLoading: loadingQueue,
-        isFetching: fetchingQueue,
+        isError,
+        isLoading,
     } = useConsultQueueQuery(
         { id: qid },
         {
@@ -34,7 +42,7 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
         }
     );
 
-    if (loadingQueue) {
+    if (isLoading) {
         return (
             <div className="flex items-center justify-center p-5">
                 <Loader />
@@ -42,38 +50,31 @@ export default function ReservationInfo({ params }: ReservationInfoProps) {
         );
     }
 
-    if (isErrorQueue) {
-        return <NotFound />
+    if (isError) {
+        return <NotFound />;
     }
+
+    const peopleAhead = (queue?.length ?? 0) - (queue?.counter ?? 0);
+    const expectedArrival = calculateExpectedArrivalTime(queue?.averageServeTime, queue?.length, queue?.counter);
 
     return (
         <div className="min-h-[calc(100dvh-6rem)] p-4">
             <div className="mx-auto max-w-sm rounded-lg border border-gray-200 bg-white p-6">
                 <div className="mb-6 flex items-center justify-center gap-2">
-                    <h1 className='text-4xl font-semibold'>{queue?.title}</h1>
+                    <h1 className="text-4xl font-semibold">{queue?.title}</h1>
                 </div>
 
-                {/* Line Information */}
                 <div className="mb-8 space-y-6">
-                    <div className="text-center">
-                        <div className="mb-1 text-gray-600">{t('Line number')}:</div>
-                        <div className="text-xl font-semibold">{queue?.counter}</div>
-                    </div>
-
-                    <div className="text-center">
-                        <div className="mb-1 text-gray-600">{t('Number of users in line ahead of you')}:</div>
-                        <div className="text-xl font-semibold">{(queue?.length ?? 0) - (queue?.counter ?? 0)}</div>
-                    </div>
-
-                    <div className="text-center">
-                        <div className="mb-1 text-gray-600">{t('Expected arrival time')}:</div>
-                        <div className="text-xl font-semibold">14:45</div>
-                    </div>
-
-                    <div className="text-center">
-                        <div className="mb-1 text-gray-600">{t('Your estimated wait time')}:</div>
-                        <div className="text-xl font-semibold">{queue?.averageServeTime}</div>
-                    </div>
+                    <InfoItem label={t('Line number')} value={queue?.counter} />
+                    <InfoItem label={t('Number of users in line ahead of you')} value={peopleAhead} />
+                    <InfoItem
+                        label={t('Expected arrival time')}
+                        value={expectedArrival.toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        })}
+                    />
+                    <InfoItem label={t('Your estimated wait time')} value={Math.round((queue?.averageServeTime ?? 0) / 60) + ' minutes'} />
                 </div>
 
                 <Link href={`/${qid}/reservations`}>

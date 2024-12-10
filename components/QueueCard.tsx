@@ -6,7 +6,7 @@ import { MouseEvent } from 'react';
 import { MdOutlineTimer } from 'react-icons/md';
 import { CardDropdown } from './QueueCardDropdown';
 
-import { usePathname, useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface QueueCardProps {
     queue: Queue;
@@ -40,7 +40,7 @@ export const QueueCard = ({ queue, triggerDeleteConfimation }: QueueCardProps) =
         <Link
             href={href}
             passHref
-            className="relative flex w-full cursor-pointer flex-col flex-wrap rounded-lg border-[#e0e6ed] bg-white p-1 shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none sm:max-w-xs"
+            className="relative flex min-w-80 w-full cursor-pointer flex-col flex-wrap rounded-lg border-[#e0e6ed] bg-white p-1 shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none sm:max-w-xs"
         >
             <div className="relative px-6 py-7">
                 <div className="flex justify-between">

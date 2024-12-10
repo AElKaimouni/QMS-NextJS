@@ -18,4 +18,5 @@ export interface Reservation {
     joinAt: string;
     calledAt?: string;
     servedAt?: string;
+    info?: any; 
 }
